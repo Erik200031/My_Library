@@ -28,7 +28,7 @@ const U& mylib::Forward_list<U>::front() const
 template <class U>
 bool mylib::Forward_list<U>::is_empty() const 
 {
-    return begin() == end();
+    return m_head == nullptr;
 }
 
 template <class U>
@@ -48,11 +48,11 @@ void mylib::Forward_list<U>::pop_front()
 }
 
 template <class U>
-mylib::Forward_list<U>::Forward_list(int count)
+mylib::Forward_list<U>::Forward_list(int count) : m_head {}
 {
     while (count)
     {
-       m_head = new Node(1, m_head); // change
+       push_front(U{});
         --count;
     }
 }
@@ -71,9 +71,11 @@ U& mylib::Forward_list<U>::operator[](int index) const
 template <class U>
 void mylib::Forward_list<U>::clear() 
 {
-    while (m_head)
-    {
-        this->pop_front();
+    if(is_empty()) {
+        while (m_head->m_next)
+        {
+            this->pop_front();
+        }
     }
 }
 
@@ -274,9 +276,9 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::end() const
     Iterator tmp;
     tmp.it = m_head;
     while(tmp.it != nullptr) {
-       tmp++;
+       ++tmp;
     }
-    return ++tmp;
+    return tmp;
 }
 
 template <class U>
@@ -285,9 +287,9 @@ typename mylib::Forward_list<U>::Const_Iterator mylib::Forward_list<U>::cend() c
     Const_Iterator tmp;
     tmp.it = m_head;
     while(tmp.it != nullptr) {
-       tmp++;
+       ++tmp;
     }
-    return ++tmp;
+    return tmp;
 }
 
 template <class U>
@@ -354,35 +356,28 @@ template <class U>
 typename mylib::Forward_list<U>::Iterator& 
 mylib::Forward_list<U>::Iterator::operator++() 
 {
-    if(it->m_next != nullptr) {
-        it = it->m_next;
-        return (*this);
-    }
-    std::cout << "Out of range";
-    return *this;
+    it = it->m_next;
+    return (*this);
 }
 
 template <class U>
 typename mylib::Forward_list<U>::Iterator 
 mylib::Forward_list<U>::Iterator::operator++(int) 
 {
-    if(it->m_next != nullptr) {
-        Iterator tmp;
-        tmp.it = this->it;
-        ++(*this);
-        return tmp;
-    }
-    return *this;
+    Iterator tmp;
+    tmp.it = this->it;
+    ++(*this);
+    return tmp;
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Iterator::operator==(const Iterator& rhs)
+bool mylib::Forward_list<U>::Iterator::operator==(Iterator& rhs)
 {
     return (this->it == rhs.it);
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Iterator::operator!=(const Iterator& rhs)
+bool mylib::Forward_list<U>::Iterator::operator!=(Iterator& rhs)
 {
     return !(this->it == rhs.it);
 }
@@ -431,35 +426,28 @@ template <class U>
 typename mylib::Forward_list<U>::Const_Iterator&
 mylib::Forward_list<U>::Const_Iterator::operator++() 
 {
-    if(it->m_next != nullptr) {
-        it = it->m_next;
-        return (*this);
-    }
-    std::cout << "Out of range";
-    return *this;
+    it = it->m_next;
+    return (*this);
 }
 
 template <class U>
 typename mylib::Forward_list<U>::Const_Iterator 
 mylib::Forward_list<U>::Const_Iterator::operator++(int) 
 {
-    if(it->m_next != nullptr) {
-        Const_Iterator tmp;
-        tmp.it = this->it;
-        ++(*this);
-        return tmp;
-    }
-    return *this;
+    Const_Iterator tmp;
+    tmp.it = this->it;
+    ++(*this);
+    return tmp;
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Const_Iterator::operator==(const Const_Iterator& rhs)
+bool mylib::Forward_list<U>::Const_Iterator::operator==(Const_Iterator& rhs)
 {
     return (this->it == rhs.it);
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Const_Iterator::operator!=(const Const_Iterator& rhs)
+bool mylib::Forward_list<U>::Const_Iterator::operator!=(Const_Iterator& rhs)
 {
     return !(this->it == rhs.it);
 }

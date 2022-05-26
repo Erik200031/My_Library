@@ -5,6 +5,7 @@
 #include <iostream>
 
 namespace mylib {
+    
     template <class T>
     class Forward_list;
 
@@ -35,7 +36,7 @@ namespace mylib {
         class Iterator : public std::iterator<std::forward_iterator_tag, U>
         {
         public:
-            Iterator(): it{m_head} {}
+            Iterator(): it{} {}
             Iterator(const Iterator& rhs) : it {rhs.it} {}
             Iterator(Iterator&& rhs) : it {rhs.it} {}
         public:
@@ -43,8 +44,8 @@ namespace mylib {
             Iterator operator++(int);
             Iterator& operator=(const Iterator& rhs);
             Iterator& operator=(Iterator&& rhs);
-            bool operator==(const Iterator& rhs);
-            bool operator!=(const Iterator& rhs);
+            bool operator==(Iterator& rhs);
+            bool operator!=(Iterator& rhs);
             U& operator*();
             U* operator->();
         private:
@@ -55,7 +56,7 @@ namespace mylib {
         class Const_Iterator : public std::iterator<std::forward_iterator_tag, U>
         {
         public:
-            Const_Iterator(): it{m_head} {}
+            Const_Iterator(): it{} {}
             Const_Iterator(const Const_Iterator& rhs) : it {rhs.it} {}
             Const_Iterator(Const_Iterator&& rhs) : it {rhs.it} {}
             Const_Iterator(const Iterator& rhs) : it {rhs.it} {}
@@ -63,8 +64,8 @@ namespace mylib {
         public:
             Const_Iterator& operator=(const Const_Iterator& rhs);
             Const_Iterator& operator=(Const_Iterator&& rhs);
-            bool operator==(const Const_Iterator& rhs);
-            bool operator!=(const Const_Iterator& rhs);
+            bool operator==(Const_Iterator& rhs);
+            bool operator!=(Const_Iterator& rhs);
             Const_Iterator& operator++();
             Const_Iterator operator++(int);
             const U& operator*() const;
@@ -110,8 +111,8 @@ namespace mylib {
         bool operator<=(const Forward_list<U>& rhs) const;      
         bool operator>=(const Forward_list<U>& rhs) const; 
         friend std::ostream& operator<<(std::ostream& os, const Forward_list<U>& lst) {
-            for(int i {}; i < lst.size(); ++i) {
-                os << lst[i] << " ";
+            for(auto it : lst) {
+                os << it << " ";
             }
             return os;
         } 
