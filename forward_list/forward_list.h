@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace mylib {
-    
+
     template <class T>
     class Forward_list;
 
@@ -48,6 +48,7 @@ namespace mylib {
             bool operator!=(Iterator& rhs);
             U& operator*();
             U* operator->();
+            Node<U>*& get() {return it;}
         private:
             friend class Forward_list;
             Node<U>* it;
@@ -70,6 +71,7 @@ namespace mylib {
             Const_Iterator operator++(int);
             const U& operator*() const;
             U* operator->();
+            const Node<U>*& get() const {return it;}
         private:
             friend class Forward_list;
             const Node<U>* it;
@@ -91,8 +93,8 @@ namespace mylib {
         bool is_empty() const;
         void pop_front();
         void clear();
-        Iterator insert_after(Const_Iterator pos, const U& element);
-        Iterator erase_after(Const_Iterator pos);
+        Iterator insert_after(Iterator pos, const U& element);
+        Iterator erase_after(Iterator pos);
         //void swap(int index1, int index2);
         //void sort();
         void reverse();
@@ -101,7 +103,7 @@ namespace mylib {
         Iterator end() const;
         Const_Iterator cbegin() const;
         Const_Iterator cend() const;
-        Iterator befor_begin() const;
+        Iterator before_begin() const;
 
     public:
         bool operator==(const Forward_list<U>& rhs) const;

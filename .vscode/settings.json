@@ -13,6 +13,8 @@
         "iterator": "cpp",
         "algorithm": "cpp",
         "bitset": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp"
     }
 }

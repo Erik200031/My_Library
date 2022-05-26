@@ -127,29 +127,28 @@ mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(Forward_list<U>&& rhs)
 
 template <class U>
 typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::insert_after
-(mylib::Forward_list<U>::Const_Iterator pos, const U& element) 
+(mylib::Forward_list<U>::Iterator pos, const U& element) 
 {
-    if(pos == befor_begin()) {
+    if(pos == before_begin()) {
         push_front(element);
         return begin();
-    } else {
-        pos->m_next = new Node<U> (element, pos->m_next);
     }
+    pos.get()->m_next = new Node<U> (element, pos.get()->m_next);
+    return pos++;
 }
 
 template <class U>
 typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::erase_after
-(mylib::Forward_list<U>::Const_Iterator pos) 
+(mylib::Forward_list<U>::Iterator pos) 
 {
-    if(pos == befor_begin()) {
+    if(pos == before_begin()) {
         pop_front();
         return begin();
-    } else {
-        Node<U>* tmp = pos.it->next;
-        pos.it->m_next = tmp->m_next;
-        delete tmp;
-        return pos.it->next;
     }
+    Node<U>* tmp = pos.get()->m_next;
+    pos.get()->m_next = tmp->m_next;
+    delete tmp;
+    return ++pos;
 }
 
 // template <class U>
@@ -263,7 +262,7 @@ typename mylib::Forward_list<U>::Const_Iterator mylib::Forward_list<U>::cbegin()
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::befor_begin() const 
+typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::before_begin() const 
 {
     Iterator tmp;
     tmp.it = m_head - 1;
@@ -419,7 +418,7 @@ U& mylib::Forward_list<U>::Iterator::operator*()
 template <class U>
 U* mylib::Forward_list<U>::Iterator::operator->()
 {
-    return &(*it);
+    return it;
 }
 
 template <class U>
