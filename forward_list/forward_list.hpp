@@ -4,6 +4,7 @@ mylib::Forward_list<U>::Forward_list() : m_head{} {}
 template <class U>
 mylib::Forward_list<U>::~Forward_list()
 {
+    if(!is_empty())
     clear();
 }
 
@@ -58,6 +59,16 @@ mylib::Forward_list<U>::Forward_list(int count) : m_head {}
 }
 
 template <class U>
+mylib::Forward_list<U>::Forward_list(int count, const U& element) : m_head {}
+{
+    while (count)
+    {
+       push_front(element);
+        --count;
+    }
+}
+
+template <class U>
 U& mylib::Forward_list<U>::operator[](int index) const 
 {
     Node<U>* current  = m_head;
@@ -71,7 +82,7 @@ U& mylib::Forward_list<U>::operator[](int index) const
 template <class U>
 void mylib::Forward_list<U>::clear() 
 {
-    if(is_empty()) {
+    if(!is_empty()) {
         while (m_head->m_next)
         {
             this->pop_front();
@@ -103,10 +114,12 @@ mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(const Forward_list<U>&
     if(this == &rhs) {
         return *this;
     }
+    if(m_head != nullptr)
     clear();
     Iterator it = begin();
-    int i{};
+    int i {};
     while(it != end()) {
+        std::cout << rhs[i] << " ";
         this->push_front(rhs[i]);
         ++i;
     }
@@ -151,102 +164,133 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::erase_after
     return ++pos;
 }
 
-// template <class U>
-// void mylib::Forward_list<U>::swap(int index1, int index2) // change
-// {
-//     if(index1 != index2 && (index1 >= 0 && index1 < m_size) && (index2 >= 0 && index2 < m_size)) {
-//         Node<U>* cur_1 = m_head;
-//         Node<U>* cur_2 = m_head;
-//         while(index1) {
-//             cur_1 = cur_1->m_next;
-//             --index1;
-//         }
-//         while(index2) {
-//             cur_2 = cur_2->m_next;
-//             --index2;
-//         }
-//         U tmp = std::move(cur_1->m_data);
-//         cur_1->m_data = std::move(cur_2->m_data);
-//         cur_2->m_data = std::move(tmp);
-//     }
-// }
-
-// template <class U>
-// void mylib::Forward_list<U>::sort() //change
-// {
-//     //Bubble sort
-
-//     for (int i {}; i < m_size-1; i++){     
-//         for (int j {}; j < m_size-i-1; j++) {
-//             if ((*this)[j] > (*this)[j+1]) {
-//                 swap(j, j+1);
-//             }
-//         } 
-//     }
-// } 
-
-// template <class U>
-// void mylib::Forward_list<U>::reverse() 
-// {
-//     if(m_size <= 1) {
-//         return;
-//     }
-//     else if(m_size == 2) {
-//         swap(0,1);
-//         return;
-//     }
-//     int start_pos = m_size-1;
-//     Node<U>* start = m_head;
-//     Node<U>* cur_1 = m_head;
-//     Node<U>* cur_2 = m_head;
-//     int tmp_size = m_size-1;
-//     int tmp_index = m_size-1;
-//     int tmp_index1 = tmp_index-1;
-
-//     while(start_pos) {
-//         start = start->m_next;
-//         --start_pos;
-//     }
-//     while(tmp_size) {
-//         int tmp_tmp_index = tmp_index;
-//         int tmp_tmp_index1 = tmp_index1;
-//         cur_2 = m_head;
-//         cur_1 = m_head;
-//         while(tmp_tmp_index){
-//             cur_1 = cur_1->m_next;
-//             --tmp_tmp_index;
-//         }
-//         while(tmp_tmp_index1){
-//             cur_2 = cur_2->m_next;
-//             --tmp_tmp_index1;
-//         }
-//         cur_1->m_next = cur_2;
-//         tmp_index--;
-//         tmp_index1--;
-//         --tmp_size;        
-//     }
-//     cur_2->m_next = nullptr;
-//     m_head = start;
-// }
-
 template <class U>
-void mylib::Forward_list<U>::reverse() 
+void mylib::Forward_list<U>::swap(int index1, int index2)
 {
-
+    Node<U>* cur_1 = m_head;
+    Node<U>* cur_2 = m_head;
+    while(index1) {
+        cur_1 = cur_1->m_next;
+        --index1;
+    }
+    while(index2) {
+        cur_2 = cur_2->m_next;
+        --index2;
+    }
+    U tmp = std::move(cur_1->m_data);
+    cur_1->m_data = std::move(cur_2->m_data);
+    cur_2->m_data = std::move(tmp);
 }
 
-// template <class U>
-// void mylib::Forward_list<U>::merge(const Forward_list<U>& rhs) 
-// {
-    
-//     for(int i{}; i < rhs.m_size; i++) {
-//         push_front(rhs[i]);
-//     }
-//     sort();    
-// }
+template <class U>
+void mylib::Forward_list<U>::merge_for_sort(int left, int mid, int right)
+{
+    int  sub_list_one = mid - left + 1;
+    int  sub_list_two = right - mid;
+    mylib::Forward_list<U> left_list(sub_list_one);
+    mylib::Forward_list<U> right_list(sub_list_two);
+    for (auto i = 0; i < sub_list_one; i++)
+        left_list[i] = (*this)[left + i];
+    for (auto j = 0; j < sub_list_two; j++)
+        right_list[j] = (*this)[mid + 1 + j];
+    int index_of_sub_list_one = 0;
+    int index_of_sub_list_two = 0;
+    int index_of_merged = left; 
+    while (index_of_sub_list_one < sub_list_one && index_of_sub_list_two < sub_list_two) {
+        if (left_list[index_of_sub_list_one] <= right_list[index_of_sub_list_two]) {
+            (*this)[index_of_merged] = left_list[index_of_sub_list_one];
+            index_of_sub_list_one++;
+        }
+        else {
+            (*this)[index_of_merged] = right_list[index_of_sub_list_two];
+            index_of_sub_list_two++;
+        }
+        index_of_merged++;
+    }
+    while (index_of_sub_list_one < sub_list_one) {
+        (*this)[index_of_merged] = left_list[index_of_sub_list_one];
+        index_of_sub_list_one++;
+        index_of_merged++;
+    }
+    while (index_of_sub_list_two < sub_list_two) {
+        (*this)[index_of_merged] = right_list[index_of_sub_list_two];
+        index_of_sub_list_two++;
+        index_of_merged++;
+    }
+} 
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::begin() const 
+bool mylib::Forward_list<U>::is_sorted_list() const
+{
+    Node<U>* cur = m_head;
+    Node<U>* after_cur = cur->m_next;
+    while(cur != nullptr && cur->m_next != nullptr && after_cur->m_next != nullptr) {
+        if(cur->m_data > after_cur->m_data) {
+            return false;
+        }
+        cur = cur->m_next;
+        after_cur = after_cur->m_next;
+    }
+    return true;
+}
+
+template <class U>
+void mylib::Forward_list<U>::mergeSort(int begin, int end)
+{
+    if (begin >= end)
+        return;
+  
+    auto mid = begin + (end - begin) / 2;
+    mergeSort(begin, mid);
+    mergeSort(mid + 1, end);
+    merge_for_sort(begin, mid, end);
+}
+
+template <class U>
+void mylib::Forward_list<U>::sort()
+{
+    int end {};
+    for(auto it: *this) {
+        ++end;
+    }
+    
+    mergeSort(0, end - 1);
+}
+
+template <class U>
+mylib::Node<U>* mylib::Forward_list<U>::do_reverse(mylib::Node<U>* head) 
+{
+    if (head == nullptr || head->m_next == nullptr)
+        return head;
+    Node<U>* tmp = do_reverse(head->m_next);
+    head->m_next->m_next = head;
+    head->m_next = nullptr;
+    return tmp;
+}
+
+template <class U>
+void mylib::Forward_list<U>::reverse()
+{
+    m_head =  do_reverse(m_head);
+}
+
+template <class U>
+void mylib::Forward_list<U>::merge(Forward_list<U>& rhs) 
+{
+    if(is_sorted_list() && rhs.is_sorted_list()) {
+        Node<U>* cur = m_head;
+        while(cur != nullptr && cur->m_next != nullptr) {
+            cur = cur->m_next;
+        }
+        cur->m_next = rhs.m_head;
+        sort();
+    } else {
+        std::cout << "These lists are not sorted!\n";
+    }
+}
+
+template <class U>
+typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::begin()
 {
     Iterator tmp;
     tmp.it = m_head;
@@ -270,7 +314,7 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::before_begin()
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::end() const 
+typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::end()
 {
     Iterator tmp;
     tmp.it = m_head;
@@ -489,4 +533,18 @@ template <class U>
 U* mylib::Forward_list<U>::Const_Iterator::operator->()
 {
     return &(*it);
+}
+
+template <class U>
+void mylib::Forward_list<U>::unique()
+{
+    std::unordered_set<U> st;
+    for (Iterator it = begin(); it != end(); ++it) {
+        st.insert(*it);
+    }
+    mylib::Forward_list<U> lst;
+    for(auto it = st.begin(); it != st.end(); ++it) {
+        lst.push_front(*it);
+    }
+    //*this = lst;
 }

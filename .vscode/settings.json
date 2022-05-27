@@ -15,6 +15,10 @@
         "bitset": "cpp",
         "chrono": "cpp",
         "forward_list": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "atomic": "cpp",
+        "ios": "cpp",
+        "system_error": "cpp",
+        "unordered_set": "cpp"
     }
 }

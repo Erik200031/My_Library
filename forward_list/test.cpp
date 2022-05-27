@@ -3,20 +3,19 @@
 
 int main() {
 
-    mylib::Forward_list<int> lst(1);
-    lst.push_front(1);
-        lst.push_front(2);
+    mylib::Forward_list<int> lst;
+    lst.push_front(111);
     lst.push_front(3);
-    lst.push_front(4);
-        lst.push_front(5);
-    std::cout << lst <<"\n";
-    auto it = lst.begin();
-    it++;
-    it++;
-    std::cout << *it << "\n";
-    lst.erase_after(it);
+    lst.push_front(53);
+    lst.push_front(44);
+        lst.push_front(3);
 
-    
-    std::cout << lst;
-
+    lst.push_front(589);
+       lst.push_front(44);
+    lst.push_front(3);
+    mylib::Forward_list<int> lst1;
+    lst1 = lst;
+    std::cout << lst1 << "\n";
+    //lst.unique();
+    //std::cout << "\n" <<lst;
 }

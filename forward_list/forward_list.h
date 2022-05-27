@@ -3,6 +3,7 @@
 
 #include <iterator>
 #include <iostream>
+#include <unordered_set>
 
 namespace mylib {
 
@@ -15,6 +16,10 @@ namespace mylib {
     public:
         Node() : m_data{}, m_next{} {}
         Node(const T& data, Node* ptr) : m_data{data}, m_next{ptr} {}
+        Node(const Node& rhs) : m_data {rhs.m_data}, m_next{rhs.m_next} {}
+        Node(Node && rhs) noexcept = default;
+        Node& operator=(const Node& rhs) = default;
+        Node& operator=(Node&& rhs) = default;
         ~Node() = default;
     private:
         template <class U>
@@ -85,7 +90,7 @@ namespace mylib {
         Forward_list& operator=(const Forward_list&);
         Forward_list& operator=(Forward_list&&) noexcept;
         Forward_list(int count);
-
+        Forward_list(int count, const U& element);
     public:
         void push_front(const U& element);
         U& front();
@@ -95,12 +100,15 @@ namespace mylib {
         void clear();
         Iterator insert_after(Iterator pos, const U& element);
         Iterator erase_after(Iterator pos);
-        //void swap(int index1, int index2);
-        //void sort();
+        void swap(int index1, int index2);
+        void sort();
         void reverse();
-        //void merge(const Forward_list<U>&);
-        Iterator begin() const;
-        Iterator end() const;
+        mylib::Node<U>* do_reverse(Node<U>* head);
+        void merge(Forward_list<U>& rhs);
+        bool is_sorted_list() const;
+        void unique();
+        Iterator begin();
+        Iterator end();
         Const_Iterator cbegin() const;
         Const_Iterator cend() const;
         Iterator before_begin() const;
@@ -112,7 +120,8 @@ namespace mylib {
         bool operator>(const Forward_list<U>& rhs) const;      
         bool operator<=(const Forward_list<U>& rhs) const;      
         bool operator>=(const Forward_list<U>& rhs) const; 
-        friend std::ostream& operator<<(std::ostream& os, const Forward_list<U>& lst) {
+        friend std::ostream& operator<<(std::ostream& os, Forward_list<U>& lst) 
+        {
             for(auto it : lst) {
                 os << it << " ";
             }
@@ -121,6 +130,8 @@ namespace mylib {
 
     private:
         U& operator[](int index) const;
+        void mergeSort(int begin, int end);
+        void merge_for_sort(int left, int mid, int right);
         Node<U>* m_head;
     };
 }
