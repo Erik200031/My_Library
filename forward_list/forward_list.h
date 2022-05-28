@@ -3,7 +3,7 @@
 
 #include <iterator>
 #include <iostream>
-#include <unordered_set>
+#include <initializer_list>
 
 namespace mylib {
 
@@ -91,6 +91,7 @@ namespace mylib {
         Forward_list& operator=(Forward_list&&) noexcept;
         Forward_list(int count);
         Forward_list(int count, const U& element);
+        Forward_list(std::initializer_list<U> ilist);
     public:
         void push_front(const U& element);
         U& front();
@@ -99,14 +100,20 @@ namespace mylib {
         void pop_front();
         void clear();
         Iterator insert_after(Iterator pos, const U& element);
+        template <class... Args>
+        Iterator emplace_after(Iterator pos, Args&&... args);
         Iterator erase_after(Iterator pos);
         void swap(int index1, int index2);
         void sort();
         void reverse();
+        void assign(size_t count, const U& element);
+        template <typename InputIter>
+        void assign(InputIter first, InputIter last);
+        void assign(std::initializer_list<U> ilist);
         mylib::Node<U>* do_reverse(Node<U>* head);
         void merge(Forward_list<U>& rhs);
         bool is_sorted_list() const;
-        void unique();
+        size_t unique();
         Iterator begin();
         Iterator end();
         Const_Iterator cbegin() const;

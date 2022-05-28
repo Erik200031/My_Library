@@ -42,6 +42,7 @@ void mylib::Forward_list<U>::pop_front()
         Node<U>* tmp = m_head;
         m_head = m_head->m_next;
         delete tmp;
+        tmp = nullptr;
     } else if (m_head->m_next == nullptr) {
         delete m_head;
         m_head = nullptr;
@@ -69,6 +70,17 @@ mylib::Forward_list<U>::Forward_list(int count, const U& element) : m_head {}
 }
 
 template <class U>
+mylib::Forward_list<U>::Forward_list(std::initializer_list<U> ilist)
+{
+    auto cur = ilist.begin();
+    while(cur != ilist.end()) {
+        push_front(*cur);
+        ++cur;
+    }
+    reverse();
+}
+
+template <class U>
 U& mylib::Forward_list<U>::operator[](int index) const 
 {
     Node<U>* current  = m_head;
@@ -83,7 +95,7 @@ template <class U>
 void mylib::Forward_list<U>::clear() 
 {
     if(!is_empty()) {
-        while (m_head->m_next)
+        while (m_head)
         {
             this->pop_front();
         }
@@ -116,12 +128,12 @@ mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(const Forward_list<U>&
     }
     if(m_head != nullptr)
     clear();
-    Iterator it = begin();
+    Const_Iterator it = rhs.cbegin();
     int i {};
-    while(it != end()) {
-        std::cout << rhs[i] << " ";
+    while(it != rhs.cend()) {
         this->push_front(rhs[i]);
         ++i;
+        ++it;
     }
     return *this;
 }
@@ -148,6 +160,63 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::insert_after
     }
     pos.get()->m_next = new Node<U> (element, pos.get()->m_next);
     return pos++;
+}
+
+template <class U>
+template <class... Args>
+typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::emplace_after
+(mylib::Forward_list<U>::Iterator pos, Args&&... args) 
+{
+    if (pos == before_begin()) {
+        push_front(U{args...});
+        return begin();
+    }
+    pos.get()->m_next = new Node<U> (U{args...}, pos.get()->m_next);
+    return pos++;
+}
+
+template <class U>
+void mylib::Forward_list<U>::assign(size_t count, const U& element)
+{
+    if(m_head != nullptr) {
+        clear();
+    }
+    while (count) {
+       push_front(element);
+        --count;
+    }
+}
+
+template <class U>
+template <typename InputIter>
+void mylib::Forward_list<U>::assign(InputIter first, InputIter last)
+{
+    if(first >= last) {
+        return;
+    }
+    if(m_head != nullptr) {
+        clear();
+    }
+    InputIter& cur = first;
+    while(cur != last) {
+        push_front(*first);
+        ++cur;
+    }
+    reverse();
+}
+
+template <class U>
+void mylib::Forward_list<U>::assign(std::initializer_list<U> ilist)
+{
+    if(m_head != nullptr) {
+        clear();
+    }
+    auto cur = ilist.begin();
+    while(cur != ilist.end()) {
+        push_front(*cur);
+        ++cur;
+    }
+    reverse();
 }
 
 template <class U>
@@ -536,15 +605,24 @@ U* mylib::Forward_list<U>::Const_Iterator::operator->()
 }
 
 template <class U>
-void mylib::Forward_list<U>::unique()
+size_t mylib::Forward_list<U>::unique()
 {
-    std::unordered_set<U> st;
-    for (Iterator it = begin(); it != end(); ++it) {
-        st.insert(*it);
+    size_t count = -1;
+    if(m_head == nullptr) {
+        return count;
     }
-    mylib::Forward_list<U> lst;
-    for(auto it = st.begin(); it != st.end(); ++it) {
-        lst.push_front(*it);
+    count = 0;
+    Iterator j = begin();
+    ++j;
+    for(Iterator i = begin(); j != end();) {
+        if(*i == *j) {
+            erase_after(i);
+            ++count;
+            ++j;
+            continue;
+        }
+        ++i;
+        ++j;  
     }
-    //*this = lst;
+    return count;
 }
