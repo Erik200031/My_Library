@@ -1,5 +1,5 @@
 template <class U>
-mylib::list<U>::list() : m_head{}, m_tail{}, m_size{} {}
+mylib::list<U>::list() : m_head{}, m_tail{m_head}, m_size{} {}
 
 template <class U>
 mylib::list<U>::list(list&& rhs) noexcept : m_head{rhs.m_head}, m_tail{rhs.m_tail}, m_size{rhs.m_size} 
@@ -31,12 +31,27 @@ template <class U>
 mylib::list<U>::list(const list& rhs)
 {
     m_size = rhs.m_size;
-    Iterator it = begin();
-    int i{};
-    while(it != end()) {
-        this->push_back(rhs[i]);
-        ++i;
+    m_head = nullptr;
+    m_tail = nullptr;
+    for (Const_Iterator it = rhs.cbegin(); it != rhs.cend(); ++it) {
+        push_back(*it);
     }
+}
+
+template <class U>
+mylib::list<U>& mylib::list<U>::operator=(list<U>&& rhs) noexcept 
+{
+    if(this == &rhs) {
+        return *this;
+    }
+    if(!is_empty()) {
+        clear();
+    }
+    this->m_head = rhs.m_head;
+    this->m_tail = rhs.m_tail;
+    rhs.m_head = nullptr;
+    rhs.m_tail = nullptr;
+    return *this;
 }
 
 template <class U>
@@ -59,6 +74,19 @@ void mylib::list<U>::push_back(const U& element)
 		Node<U>* new_node = new Node<U>(element, nullptr, m_tail);
 		m_tail->m_next = new_node;
 		m_tail = new_node;
+	}
+    ++m_size;
+}
+
+template <class U>
+void mylib::list<U>::push_front(const U& element)
+{
+    if(!m_head) {
+		m_head = m_tail = new Node<U>(element, nullptr, nullptr);
+	} else {
+		Node<U>* new_node = new Node<U>(element, m_head, nullptr);
+		m_head = new_node;
+        new_node->m_next->m_prev = new_node;
 	}
     ++m_size;
 }
@@ -113,7 +141,23 @@ void mylib::list<U>::pop_front()
     }
 }
 
-
+template <class U>
+void mylib::list<U>::pop_back() 
+{
+    if(m_head == nullptr) {
+        return;
+    }
+    if(m_head->m_next != nullptr) {
+        Node<U>* tmp = m_tail;
+        m_tail = tmp->m_prev;
+        m_tail->m_next = nullptr;
+        delete tmp;
+        tmp = nullptr;
+    } else if (m_head->m_next == nullptr) {
+        delete m_head;
+        m_head = nullptr;
+    }
+}
 
 
 

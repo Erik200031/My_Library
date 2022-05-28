@@ -92,8 +92,8 @@ namespace mylib {
         ~list();
         list(const list&);
         list(list&&) noexcept;
-         list& operator=(const list&);
-        // list& operator=(Forward_list&&) noexcept;
+        list& operator=(const list&);
+        list& operator=(list&&) noexcept;
         // list(int count);
         // list(int count, const U& element);
         // list(std::initializer_list<U> ilist);
@@ -103,8 +103,10 @@ namespace mylib {
         // const U& front() const;
         bool is_empty() const;
         void pop_front();
+        void pop_back();
         void clear();
         void push_back(const U& element);
+        void push_front(const U& element);
         // Iterator insert_after(Iterator pos, const U& element);
         // template <class... Args>
         // Iterator emplace_after(Iterator pos, Args&&... args);
@@ -136,8 +138,10 @@ namespace mylib {
         // bool operator>=(const Forward_list<U>& rhs) const; 
         friend std::ostream& operator<<(std::ostream& os, list<U>& lst) 
         {
-            for(auto it : lst) {
-                os << it << " ";
+            if(!lst.is_empty()) {
+                for(auto it : lst) {
+                    os << it << " ";
+                }
             }
             return os;
         } 

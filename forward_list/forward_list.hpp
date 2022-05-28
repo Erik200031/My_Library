@@ -105,11 +105,10 @@ void mylib::Forward_list<U>::clear()
 template <class U>
 mylib::Forward_list<U>::Forward_list(const Forward_list& rhs)
 {
-    Iterator it = begin();
-    int i{};
-    while(it != end()) {
-        this->push_front(rhs[i]);
-        ++i;
+    m_head = nullptr;
+    for (Const_Iterator it = rhs.cbegin(); it != rhs.cend(); ++it)
+    {
+        push_back(*it);
     }
 }
 
@@ -144,7 +143,8 @@ mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(Forward_list<U>&& rhs)
     if(this == &rhs) {
         return *this;
     }
-    clear();
+    if(!is_empty())
+        clear();
     this->m_head = rhs.m_head;
     rhs.m_head = nullptr;
     return *this;

@@ -6,18 +6,9 @@ int main() {
     mylib::list<int> lst;
     lst.push_back(10);
     lst.push_back(11);
-     lst.push_back(11);
-     lst.push_back(11);
-     lst.push_back(11);
-     mylib::list<int> lst1;
-    
-     lst1.push_back(110);
-    lst1.push_back(111);
-    lst1.push_back(111);
-    lst1.push_back(111);
-    lst.push_back(11);
-     lst1 = lst;
-   // lst.pop_front();
-    std::cout << lst1 << " ";
-        std::cout << lst << " ";
+     lst.push_front(99);
+     mylib::list<int> lst1(std::move(lst));
+     lst1.pop_back();
+        std::cout << lst1 << " ";
+      // std::cout << lst << " ";
 }
