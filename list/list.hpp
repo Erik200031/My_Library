@@ -20,7 +20,7 @@ mylib::list<U>& mylib::list<U>::operator=(const list<U>& rhs)
     Const_Iterator it = rhs.cbegin();
     int i {};
     while(it != rhs.cend()) {
-        this->push_back(rhs[i]);
+        push_back(rhs[i]);
         ++i;
         ++it;
     }
@@ -84,6 +84,8 @@ void mylib::list<U>::clear()
         {
             this->pop_front();
         }
+        m_head = nullptr;
+        m_tail = nullptr;
     }
 }
 
