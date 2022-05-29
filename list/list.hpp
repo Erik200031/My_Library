@@ -159,10 +159,105 @@ void mylib::list<U>::pop_back()
     }
 }
 
+template <class U>
+mylib::list<U>::list(size_t count) : m_head {} , m_tail{}
+{
+    while (count) {
+       push_back(U{});
+        --count;
+    }
+}
+
+template <class U>
+mylib::list<U>::list(size_t count, const U& element) : m_head {}, m_tail{}
+{
+    while (count) {
+       push_back(element);
+        --count;
+    }
+}
+
+template <class U>
+mylib::list<U>::list(std::initializer_list<U> ilist) : m_head {}, m_tail{}
+{
+    auto cur = ilist.begin();
+    while(cur != ilist.end()) {
+        push_back(*cur);
+        ++cur;
+    }
+}
+
+template <class U>
+typename mylib::list<U>::Iterator mylib::list<U>::insert
+(mylib::list<U>::Iterator pos, const U& element) 
+{
+    if(pos == begin()) {
+        push_front(element);
+        return begin();
+    }
+    pos.get()->m_prev->m_next = new Node<U> (element, pos.get(), pos.get()->m_prev);
+    pos.get()->m_prev->m_next->m_next->m_prev = pos.get()->m_prev->m_next;
+    return --pos;
+}
+
+template <class U>
+template <class... Args>
+typename mylib::list<U>::Iterator mylib::list<U>::emplace
+(mylib::list<U>::Iterator pos, Args&&... args) 
+{
+    if(pos == begin()) {
+        push_front(U{args...});
+        return begin();
+    }
+    pos.get()->m_prev->m_next = new Node<U> (U{args...}, pos.get(), pos.get()->m_prev);
+    pos.get()->m_prev->m_next->m_next->m_prev = pos.get()->m_prev->m_next;
+    return --pos;
+}
+
+template <class U>
+typename mylib::list<U>::Iterator mylib::list<U>::erase
+(mylib::list<U>::Iterator pos) 
+{
+    if(pos == begin()) {
+        pop_front();
+        return begin();
+    } else if(pos.get()->m_next == nullptr) {
+        pop_back();
+        return --pos;
+    }
+    Node<U>* tmp = pos.get();
+    pos.get()->m_prev->m_next = pos.get()->m_next;
+    pos.get()->m_next->m_prev = pos.get()->m_prev;
+    delete tmp;
+    return ++pos;
+}
 
 
 
 
+template <class U>
+U& mylib::list<U>::front()
+{
+    return m_head->m_data;
+}
+
+template <class U>
+const U& mylib::list<U>::front() const
+{
+    return m_head->m_data;
+}
+
+template <class U>
+U& mylib::list<U>::back()
+{
+    return m_tail->m_data;
+}
+
+template <class U>
+const U& mylib::list<U>::back() const
+{
+    return m_tail->m_data;
+}
 
 template <class U>
 typename mylib::list<U>::Iterator& 
@@ -287,7 +382,6 @@ U* mylib::list<U>::Const_Iterator::operator->()
 {
     return &(*it);
 }
-
 
 template <class U>
 bool mylib::list<U>::Iterator::operator==(Iterator& rhs)

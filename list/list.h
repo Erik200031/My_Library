@@ -94,23 +94,24 @@ namespace mylib {
         list(list&&) noexcept;
         list& operator=(const list&);
         list& operator=(list&&) noexcept;
-        // list(int count);
-        // list(int count, const U& element);
-        // list(std::initializer_list<U> ilist);
+        list(size_t count);
+        list(size_t count, const U& element);
+        list(std::initializer_list<U> ilist);
     public:
-        // void push_front(const U& element);
-        // U& front();
-        // const U& front() const;
+        U& front();
+        U& back();
+        const U& front() const;
+        const U& back() const;
         bool is_empty() const;
         void pop_front();
         void pop_back();
         void clear();
         void push_back(const U& element);
         void push_front(const U& element);
-        // Iterator insert_after(Iterator pos, const U& element);
-        // template <class... Args>
-        // Iterator emplace_after(Iterator pos, Args&&... args);
-        // Iterator erase_after(Iterator pos);
+        Iterator insert(Iterator pos, const U& element);
+        template <class... Args>
+        Iterator emplace(Iterator pos, Args&&... args);
+        Iterator erase(Iterator pos);
         // void swap(int index1, int index2);
         // void sort();
         // void reverse();
