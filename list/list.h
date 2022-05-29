@@ -20,6 +20,7 @@ namespace mylib {
         Node(Node && rhs) noexcept = default;
         Node& operator=(const Node& rhs) = default;
         Node& operator=(Node&& rhs) = default;
+       
         ~Node() = default;
     private:
         template <class U>
@@ -112,9 +113,9 @@ namespace mylib {
         template <class... Args>
         Iterator emplace(Iterator pos, Args&&... args);
         Iterator erase(Iterator pos);
-        // void swap(int index1, int index2);
+        void swap(list& rhs);
         // void sort();
-        // void reverse();
+        void reverse();
         // void assign(size_t count, const U& element);
         // template <typename InputIter>
         // void assign(InputIter first, InputIter last);

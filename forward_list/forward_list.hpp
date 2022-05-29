@@ -72,6 +72,8 @@ mylib::Forward_list<U>::Forward_list(int count, const U& element) : m_head {}
 template <class U>
 mylib::Forward_list<U>::Forward_list(std::initializer_list<U> ilist)
 {
+        m_head = nullptr;
+
     auto cur = ilist.begin();
     while(cur != ilist.end()) {
         push_front(*cur);

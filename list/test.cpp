@@ -1,14 +1,15 @@
 #include <iostream>
 
 #include "list.h"
+#include <list>
 
 int main() {
-    mylib::list<int> lst;
-    lst.push_back(1);
-    lst.push_back(2);
-    lst.push_back(3);
-    auto it = lst.begin();
-    ++it;
-    std::cout << *(lst.erase(lst.begin()));
+    mylib::list<int> lst{1, 3, 5, 7, 9, 44};
+
     std::cout << "\n" << lst;
+    
+    lst.reverse();
+    
+    std::cout << "\n" << lst << "\n";
+
 }

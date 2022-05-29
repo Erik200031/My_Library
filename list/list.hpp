@@ -228,10 +228,29 @@ typename mylib::list<U>::Iterator mylib::list<U>::erase
     Node<U>* tmp = pos.get();
     pos.get()->m_prev->m_next = pos.get()->m_next;
     pos.get()->m_next->m_prev = pos.get()->m_prev;
+    ++pos;
     delete tmp;
-    return ++pos;
+    return pos;
 }
 
+template <class U>
+void mylib::list<U>::swap(list<U>& rhs)
+{
+    Node<U>* tmp = m_head;
+    m_head = rhs.m_head;
+    rhs.m_head = tmp;
+    tmp = m_tail;
+    m_tail = rhs.m_tail;
+    rhs.m_tail = tmp;
+}
+
+template <class U>
+void mylib::list<U>::reverse()
+{
+    
+    
+    
+}
 
 
 
