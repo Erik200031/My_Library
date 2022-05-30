@@ -115,21 +115,20 @@ namespace mylib {
         Iterator erase(Iterator pos);
         void swap(list& rhs);
         // void sort();
-        void reverse();
-        // void assign(size_t count, const U& element);
+        //void reverse();
+        void assign(size_t count, const U& element);
         // template <typename InputIter>
         // void assign(InputIter first, InputIter last);
         // void assign(std::initializer_list<U> ilist);
         // mylib::Node<U>* do_reverse(Node<U>* head);
         // void merge(Forward_list<U>& rhs);
         // bool is_sorted_list() const;
-        // size_t unique();
+        size_t unique();
         Iterator begin();
         Iterator end();
         size_t size() const;
         Const_Iterator cbegin() const;
         Const_Iterator cend() const;
-        // Iterator before_begin() const;
 
     public:
         // bool operator==(const Forward_list<U>& rhs) const;

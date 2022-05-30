@@ -244,13 +244,51 @@ void mylib::list<U>::swap(list<U>& rhs)
     rhs.m_tail = tmp;
 }
 
+// template <class U>
+// void mylib::list<U>::reverse()
+// {
+    
+    
+    
+// }
+
 template <class U>
-void mylib::list<U>::reverse()
+size_t mylib::list<U>::unique()
 {
-    
-    
-    
+    size_t count = -1;
+    if(m_head == nullptr) {
+        return count;
+    }
+    count = 0;
+    Iterator j = begin();
+    ++j;
+    for(Iterator i = begin(); j != end();) {
+        if(*i == *j) {
+            erase(j);
+            ++count;
+            ++j;
+            continue;
+        }
+        ++i;
+        ++j;  
+    }
+    return count;
 }
+
+template <class U>
+void mylib::list<U>::assign(size_t count, const U& element)
+{
+    if(m_head != nullptr) {
+        clear();
+    }
+    while (count) {
+       push_front(element);
+        --count;
+    }
+}
+
+
+
 
 
 
