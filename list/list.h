@@ -114,15 +114,15 @@ namespace mylib {
         Iterator emplace(Iterator pos, Args&&... args);
         Iterator erase(Iterator pos);
         void swap(list& rhs);
-        // void sort();
-        //void reverse();
+        void sort();
+        void reverse();
         void assign(size_t count, const U& element);
-        // template <typename InputIter>
-        // void assign(InputIter first, InputIter last);
-        // void assign(std::initializer_list<U> ilist);
-        // mylib::Node<U>* do_reverse(Node<U>* head);
-        // void merge(Forward_list<U>& rhs);
-        // bool is_sorted_list() const;
+        template <typename InputIter>
+        void assign(InputIter first, InputIter last);
+        void assign(std::initializer_list<U> ilist);
+        mylib::Node<U>* do_reverse(Node<U>* head, mylib::Node<U>* tail);
+        void merge(list<U>& rhs);
+        bool is_sorted_list() const;
         size_t unique();
         Iterator begin();
         Iterator end();
@@ -131,12 +131,12 @@ namespace mylib {
         Const_Iterator cend() const;
 
     public:
-        // bool operator==(const Forward_list<U>& rhs) const;
-        // bool operator!=(const Forward_list<U>& rhs) const;  
-        // bool operator<(const Forward_list<U>& rhs) const;      
-        // bool operator>(const Forward_list<U>& rhs) const;      
-        // bool operator<=(const Forward_list<U>& rhs) const;      
-        // bool operator>=(const Forward_list<U>& rhs) const; 
+        bool operator==(const list<U>& rhs) const;
+        bool operator!=(const list<U>& rhs) const;  
+        bool operator<(const list<U>& rhs) const;      
+        bool operator>(const list<U>& rhs) const;      
+        bool operator<=(const list<U>& rhs) const;      
+        bool operator>=(const list<U>& rhs) const; 
         friend std::ostream& operator<<(std::ostream& os, list<U>& lst) 
         {
             if(!lst.is_empty()) {
@@ -149,8 +149,8 @@ namespace mylib {
 
     private:
         U& operator[](int index) const;
-        // void mergeSort(int begin, int end);
-        // void merge_for_sort(int left, int mid, int right);
+        void mergeSort(int begin, int end);
+        void merge_for_sort(int left, int mid, int right);
         Node<U>* m_head;
         Node<U>* m_tail;
         size_t m_size;

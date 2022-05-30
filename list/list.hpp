@@ -160,7 +160,7 @@ void mylib::list<U>::pop_back()
 }
 
 template <class U>
-mylib::list<U>::list(size_t count) : m_head {} , m_tail{}
+mylib::list<U>::list(size_t count) : m_head {} , m_tail{}, m_size{}
 {
     while (count) {
        push_back(U{});
@@ -169,7 +169,7 @@ mylib::list<U>::list(size_t count) : m_head {} , m_tail{}
 }
 
 template <class U>
-mylib::list<U>::list(size_t count, const U& element) : m_head {}, m_tail{}
+mylib::list<U>::list(size_t count, const U& element) : m_head {}, m_tail{}, m_size{}
 {
     while (count) {
        push_back(element);
@@ -178,7 +178,7 @@ mylib::list<U>::list(size_t count, const U& element) : m_head {}, m_tail{}
 }
 
 template <class U>
-mylib::list<U>::list(std::initializer_list<U> ilist) : m_head {}, m_tail{}
+mylib::list<U>::list(std::initializer_list<U> ilist) : m_head {}, m_tail{}, m_size{}
 {
     auto cur = ilist.begin();
     while(cur != ilist.end()) {
@@ -244,13 +244,27 @@ void mylib::list<U>::swap(list<U>& rhs)
     rhs.m_tail = tmp;
 }
 
-// template <class U>
-// void mylib::list<U>::reverse()
-// {
-    
-    
-    
-// }
+template <class U>
+void mylib::list<U>::reverse()
+{
+    Node<U>* tmp = m_head;
+    m_head = do_reverse(m_head, m_tail);
+    m_tail = tmp;
+}
+
+template <class U>
+mylib::Node<U>* mylib::list<U>::do_reverse(mylib::Node<U>* head, mylib::Node<U>* tail) 
+{
+    if ((head == nullptr || head->m_next == nullptr) ||
+    (tail == nullptr || tail->m_prev == nullptr))
+        return head;
+    Node<U>* tmp = do_reverse(head->m_next, tail->m_prev);
+    tail->m_prev->m_prev = tail;
+    tail->m_prev = nullptr;
+    head->m_next->m_next = head;
+    head->m_next = nullptr;
+    return tmp;
+}
 
 template <class U>
 size_t mylib::list<U>::unique()
@@ -287,10 +301,110 @@ void mylib::list<U>::assign(size_t count, const U& element)
     }
 }
 
+template <class U>
+template <typename InputIter>
+void mylib::list<U>::assign(InputIter first, InputIter last)
+{
+    if(first >= last) {
+        return;
+    }
+    if(m_head != nullptr) {
+        clear();
+    }
+    InputIter& cur = first;
+    while(cur != last) {
+        push_back(*first);
+        ++cur;
+    }
+}
 
+template <class U>
+void mylib::list<U>::assign(std::initializer_list<U> ilist)
+{
+    if(m_head != nullptr) {
+        clear();
+    }
+    auto cur = ilist.begin();
+    while(cur != ilist.end()) {
+        push_back(*cur);
+        ++cur;
+    }
+}
 
+template <class U>
+bool mylib::list<U>::is_sorted_list() const
+{
+    Node<U>* cur = m_head;
+    Node<U>* after_cur = cur->m_next;
+    while(cur != nullptr && cur->m_next != nullptr && after_cur->m_next != nullptr) {
+        if(cur->m_data > after_cur->m_data) {
+            return false;
+        }
+        cur = cur->m_next;
+        after_cur = after_cur->m_next;
+    }
+    return true;
+}
 
+template <class U>
+bool mylib::list<U>::operator==(const mylib::list<U>& rhs) const 
+{
+    Const_Iterator it = cbegin();
+    int i{};
+    while(it != cend()) {
+        if(*this[i] != rhs[i]) {
+            return false;
+        }
+        ++i;
+    }
+    return true;
+}
 
+template <class U>
+bool mylib::list<U>::operator!=(const mylib::list<U>& rhs) const 
+{
+    return !(*this == rhs);
+}
+
+template <class U>
+bool mylib::list<U>::operator<(const mylib::list<U>& rhs) const 
+{
+   Const_Iterator it = cbegin();
+    int i{};
+    while(it != cend()) {
+        if(*this[i] > rhs[i]) {
+            return false;
+        }
+        ++i;
+    }
+    return true;
+}
+
+template <class U>
+bool mylib::list<U>::operator>(const mylib::list<U>& rhs) const 
+{
+    return !(*this <= rhs);
+}
+
+template <class U>
+bool mylib::list<U>::operator<=(const mylib::list<U>& rhs) const 
+{
+    Const_Iterator it = cbegin();
+    int i{};
+    while(it != cend()) {
+        if(*this[i] >= rhs[i]) {
+            return false;
+        }
+        ++i;
+    }
+    return true;
+}
+
+template <class U>
+bool mylib::list<U>::operator>=(const mylib::list<U>& rhs) const 
+{
+    return !(*this < rhs);
+}
 
 template <class U>
 U& mylib::list<U>::front()
@@ -522,4 +636,75 @@ typename mylib::list<U>::Const_Iterator mylib::list<U>::cend() const
     Const_Iterator tmp;
     tmp.it = m_tail->m_next;
     return tmp;
+}
+
+template <class U>
+void mylib::list<U>::sort()
+{
+    mergeSort(0, size() - 1);
+}
+
+template <class U>
+void mylib::list<U>::mergeSort(int begin, int end)
+{
+    if (begin >= end)
+        return;
+  
+    auto mid = begin + (end - begin) / 2;
+    mergeSort(begin, mid);
+    mergeSort(mid + 1, end);
+    merge_for_sort(begin, mid, end);
+}
+
+template <class U>
+void mylib::list<U>::merge_for_sort(int left, int mid, int right)
+{
+    int  sub_list_one = mid - left + 1;
+    int  sub_list_two = right - mid;
+    mylib::list<U> left_list(sub_list_one);
+    mylib::list<U> right_list(sub_list_two);
+    for (auto i = 0; i < sub_list_one; i++)
+        left_list[i] = (*this)[left + i];
+    for (auto j = 0; j < sub_list_two; j++)
+        right_list[j] = (*this)[mid + 1 + j];
+    int index_of_sub_list_one = 0;
+    int index_of_sub_list_two = 0;
+    int index_of_merged = left; 
+    while (index_of_sub_list_one < sub_list_one && index_of_sub_list_two < sub_list_two) {
+        if (left_list[index_of_sub_list_one] <= right_list[index_of_sub_list_two]) {
+            (*this)[index_of_merged] = left_list[index_of_sub_list_one];
+            index_of_sub_list_one++;
+        }
+        else {
+            (*this)[index_of_merged] = right_list[index_of_sub_list_two];
+            index_of_sub_list_two++;
+        }
+        index_of_merged++;
+    }
+    while (index_of_sub_list_one < sub_list_one) {
+        (*this)[index_of_merged] = left_list[index_of_sub_list_one];
+        index_of_sub_list_one++;
+        index_of_merged++;
+    }
+    while (index_of_sub_list_two < sub_list_two) {
+        (*this)[index_of_merged] = right_list[index_of_sub_list_two];
+        index_of_sub_list_two++;
+        index_of_merged++;
+    }
+} 
+
+template <class U>
+void mylib::list<U>::merge(list<U>& rhs) 
+{
+    if(is_sorted_list() && rhs.is_sorted_list()) {
+        m_tail->m_next = rhs.m_head->m_next;
+        m_tail->m_next->m_prev = m_tail;
+        m_tail = rhs.m_tail;
+        m_size += rhs.m_size - 1;
+        sort();
+        rhs.m_head = nullptr;
+        rhs.m_tail = nullptr;
+    } else {
+        std::cout << "These lists are not sorted!\n";
+    }
 }
