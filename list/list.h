@@ -88,6 +88,54 @@ namespace mylib {
             const Node<U>* it;
         };
 
+        class Reverse_Iterator : public std::iterator<std::bidirectional_iterator_tag, U>
+        {
+        public:
+            Reverse_Iterator(): it{} {}
+            Reverse_Iterator(const Reverse_Iterator& rhs) : it {rhs.it} {}
+            Reverse_Iterator(Reverse_Iterator&& rhs) : it {rhs.it} {}
+        public:
+            Reverse_Iterator& operator++();
+            Reverse_Iterator operator++(int);
+            Reverse_Iterator& operator--();
+            Reverse_Iterator operator--(int);
+            Reverse_Iterator& operator=(const Reverse_Iterator& rhs);
+            Reverse_Iterator& operator=(Reverse_Iterator&& rhs);
+            bool operator==(Reverse_Iterator& rhs);
+            bool operator!=(Reverse_Iterator& rhs);
+            U& operator*();
+            U* operator->();
+            Node<U>*& get() {return it;}
+        private:
+            friend class list;
+            Node<U>* it;
+        };
+
+        class Const_Reverse_Iterator : public std::iterator<std::bidirectional_iterator_tag, U>
+        {
+        public:
+            Const_Reverse_Iterator(): it{} {}
+            Const_Reverse_Iterator(const Const_Reverse_Iterator& rhs) : it {rhs.it} {}
+            Const_Reverse_Iterator(Const_Reverse_Iterator&& rhs) : it {rhs.it} {}
+            Const_Reverse_Iterator(const Iterator& rhs) : it {rhs.it} {}
+            Const_Reverse_Iterator(Iterator&& rhs) : it {rhs.it} {}
+        public:
+            Const_Reverse_Iterator& operator=(const Const_Reverse_Iterator& rhs);
+            Const_Reverse_Iterator& operator=(Const_Reverse_Iterator&& rhs);
+            bool operator==(Const_Reverse_Iterator& rhs);
+            bool operator!=(Const_Reverse_Iterator& rhs);
+            Const_Reverse_Iterator& operator++();
+            Const_Reverse_Iterator operator++(int);
+            Const_Reverse_Iterator& operator--();
+            Const_Reverse_Iterator operator--(int);
+            const U& operator*() const;
+            U* operator->();
+            const Node<U>*& get() const {return it;}
+        private:
+            friend class list;
+            const Node<U>* it;
+        };
+
     public:
         list();
         ~list();
@@ -126,9 +174,13 @@ namespace mylib {
         size_t unique();
         Iterator begin();
         Iterator end();
-        size_t size() const;
         Const_Iterator cbegin() const;
         Const_Iterator cend() const;
+        Reverse_Iterator rbegin();
+        Reverse_Iterator rend();
+        Const_Reverse_Iterator crbegin() const;
+        Const_Reverse_Iterator crend() const;
+        size_t size() const;
 
     public:
         bool operator==(const list<U>& rhs) const;

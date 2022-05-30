@@ -639,6 +639,38 @@ typename mylib::list<U>::Const_Iterator mylib::list<U>::cend() const
 }
 
 template <class U>
+typename mylib::list<U>::Reverse_Iterator mylib::list<U>::rbegin()
+{
+    Reverse_Iterator tmp;
+    tmp.it = m_tail;
+    return tmp;
+}
+
+template <class U>
+typename mylib::list<U>::Reverse_Iterator mylib::list<U>::rend()
+{
+    Reverse_Iterator tmp;
+    tmp.it = m_head->m_prev;
+    return tmp;
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator mylib::list<U>::crbegin() const
+{
+    Const_Reverse_Iterator tmp;
+    tmp.it = m_tail;
+    return tmp;
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator mylib::list<U>::crend() const
+{
+    Const_Reverse_Iterator tmp;
+    tmp.it = m_head->m_prev;
+    return tmp;
+}
+
+template <class U>
 void mylib::list<U>::sort()
 {
     mergeSort(0, size() - 1);
@@ -707,4 +739,184 @@ void mylib::list<U>::merge(list<U>& rhs)
     } else {
         std::cout << "These lists are not sorted!\n";
     }
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator& 
+mylib::list<U>::Const_Reverse_Iterator::operator++() 
+{
+    it = it->m_next;
+    return (*this);
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator 
+mylib::list<U>::Const_Reverse_Iterator::operator++(int) 
+{
+    Const_Reverse_Iterator tmp;
+    tmp.it = this->it;
+    ++(*this);
+    return tmp;
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator& 
+mylib::list<U>::Const_Reverse_Iterator::operator--() 
+{
+    it = it->m_prev;
+    return (*this);
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator 
+mylib::list<U>::Const_Reverse_Iterator::operator--(int) 
+{
+    Const_Reverse_Iterator tmp;
+    tmp.it = this->it;
+    --(*this);
+    return tmp;
+}
+
+template <class U>
+bool mylib::list<U>::Const_Reverse_Iterator::operator==(Const_Reverse_Iterator& rhs)
+{
+    return (this->it == rhs.it);
+}
+
+template <class U>
+bool mylib::list<U>::Const_Reverse_Iterator::operator!=(Const_Reverse_Iterator& rhs)
+{
+    return !(this->it == rhs.it);
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator& 
+mylib::list<U>::Const_Reverse_Iterator::operator=(const Const_Reverse_Iterator& rhs) 
+{
+    if(this == &rhs) {
+        return *this;
+    }
+    if(this != nullptr) {
+        delete this;
+    }
+    this->it = rhs.it;
+    return *this;
+}
+
+template <class U>
+typename mylib::list<U>::Const_Reverse_Iterator& 
+mylib::list<U>::Const_Reverse_Iterator::operator=(Const_Reverse_Iterator&& rhs) 
+{
+    if(this == &rhs) {
+        return *this;
+    }
+    if(this != nullptr) {
+        delete this;
+    }
+    this->it = rhs.it;
+    return *this;
+}
+
+template <class U>
+const U& mylib::list<U>::Const_Reverse_Iterator::operator*() const
+{
+    return it->m_data;
+}
+
+template <class U>
+U* mylib::list<U>::Const_Reverse_Iterator::operator->()
+{
+    auto itr = it;
+    --itr;
+    return &(*itr);
+}
+
+template <class U>
+typename mylib::list<U>::Reverse_Iterator& 
+mylib::list<U>::Reverse_Iterator::operator++() 
+{
+    it = it->m_next;
+    return (*this);
+}
+
+template <class U>
+typename mylib::list<U>::Reverse_Iterator 
+mylib::list<U>::Reverse_Iterator::operator++(int) 
+{
+    Reverse_Iterator tmp;
+    tmp.it = this->it;
+    ++(*this);
+    return tmp;
+}
+
+template <class U>
+typename mylib::list<U>::Reverse_Iterator& 
+mylib::list<U>::Reverse_Iterator::operator--() 
+{
+    it = it->m_prev;
+    return (*this);
+}
+
+template <class U>
+typename mylib::list<U>::Reverse_Iterator 
+mylib::list<U>::Reverse_Iterator::operator--(int) 
+{
+    Reverse_Iterator tmp;
+    tmp.it = this->it;
+    --(*this);
+    return tmp;
+}
+
+template <class U>
+bool mylib::list<U>::Reverse_Iterator::operator==(Reverse_Iterator& rhs)
+{
+    return (this->it == rhs.it);
+}
+
+template <class U>
+bool mylib::list<U>::Reverse_Iterator::operator!=(Reverse_Iterator& rhs)
+{
+    return !(this->it == rhs.it);
+}
+
+template <class U>
+typename mylib::list<U>::Reverse_Iterator& 
+mylib::list<U>::Reverse_Iterator::operator=(const Reverse_Iterator& rhs) 
+{
+    if(this == &rhs) {
+        return *this;
+    }
+    if(this != nullptr) {
+        delete this;
+    }
+    this->it = rhs.it;
+    return *this;
+}
+
+template <class U>
+typename mylib::list<U>::Reverse_Iterator& 
+mylib::list<U>::Reverse_Iterator::operator=(Reverse_Iterator&& rhs) 
+{
+    if(this == &rhs) {
+        return *this;
+    }
+    if(this != nullptr) {
+        delete this;
+    }
+    this->it = rhs.it;
+    return *this;
+}
+
+template <class U>
+U& mylib::list<U>::Reverse_Iterator::operator*()
+{
+    return it->m_data;
+}
+
+template <class U>
+U* mylib::list<U>::Reverse_Iterator::operator->()
+{
+    auto itr = it;
+    --itr;
+    return &(*itr);
 }

@@ -4,16 +4,14 @@
 #include <list>
 
 int main() {
-    mylib::list<int> lst{1, 32, 5, 5, 985, 7, 9, 1};
-    mylib::list<int> lst1{1, 32, 52, 5, 35, 7, 9};
+    mylib::list<int> lst;
+    lst.push_back(9);
+    lst.push_back(8);
+    lst.push_back(7);
+    lst.push_back(5);
+    lst.push_back(1);
 
-    std::cout << "\n" << lst;
-    std::cout << "\n" << lst1 << "\n";
-    lst1.sort();
-    lst.sort();
-         std::cout << "\n" << lst << "\n";
-     std::cout << "\n" << lst1 << "\n";
-     lst.merge(lst1);
+    std::cout << *lst.crbegin();
 
     std::cout << "\n" << lst << "\n";
 }
