@@ -1,6 +1,8 @@
 #ifndef VARIANT_H
 #define VARIANT_H
 
+#include <type_traits>
+
 namespace mylib
 {
     template <typename... Types>
@@ -58,28 +60,28 @@ namespace mylib
         //     }
         //     return pack[--index];
         // }
-        T& operator[](size_t index) {
-            if(index == 0) {
-                return value;
-            }
-           return pack[--index];
-        }
-        const T& operator[](size_t index) const {
-            if(index == 0) {
-                return value;
-            }
-            return pack[--index];
-        }
+        // T& operator[](size_t index) {
+        //     if(index == 0) {
+        //         return value;
+        //     }
+        //    return pack[--index];
+        // }
+        // const T& operator[](size_t index) const {
+        //     if(index == 0) {
+        //         return value;
+        //     }
+        //     return pack[--index];
+        // }
 
-        auto& get_pack_val() {
-            return pack.pack.pack.value;
-        } 
+        // auto& get_pack_val() {
+        //     return pack.pack.pack.value;
+        // } 
 
         auto& get_val() {
             return value;
         }
 
-        auto& pak() {
+       constexpr auto& get_pack() {
             return pack;
         }
         
@@ -130,7 +132,6 @@ namespace mylib
     public:
         T value;
         variant<Types...> pack; 
-
        
     };
 
@@ -199,6 +200,13 @@ namespace mylib
         const auto& operator[](size_t index) const {
             return value;
         }
+        auto& get_val() {
+            return value;
+        }
+        constexpr auto get_pack() {
+            return variant();
+        }
+       
         ~variant() = default;
     public:
         T value;
@@ -240,6 +248,8 @@ namespace mylib
     //     variant<Args...> value;
     // };
 
+    template <>
+    class variant <> {};
 
 
 
