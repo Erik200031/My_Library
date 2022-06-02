@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <any>
 #include "variant.h"
 
 
@@ -23,47 +22,40 @@
 template <typename Variant, size_t IDX>
 struct get_pack_
 {
-    get_pack_(const Variant& t) : ob{t} {}
-    auto operator()() {
-        return get_pack_<decltype(ob.get_pack()), IDX - 1>(ob.get_pack());
+    static auto& help(Variant& v) {
+        return get_pack_<decltype(v.get_pack()), IDX - 1>::help(v.get_pack());
     }
-    Variant ob;
 };
-
 
 template <typename Variant>
 struct get_pack_<Variant, 1>
 {
-    get_pack_(const Variant& t) : ob{t} {}
-    auto operator()() {
-        return ob.get_pack();
+    static auto& help(Variant& v) {
+        return v.get_pack();
     }
-    Variant ob;
-
 };
+
 template <typename Variant>
 struct get_pack_<Variant, 0>
 {
-    get_pack_(const Variant& t) : ob{t} {}
-    Variant operator()() {
-        return ob;
+    static auto help(Variant& v) {
+        return v;
     }
-    Variant ob;
-
 };
 
-
-
 template <typename Variant, size_t i>
-std::any gett(const Variant& t) {
-    
-    //return get_pack_<Variant, i>(t).get_val();
-    return get_pack_<Variant, i>(t).ob.get_val();
+auto& gett(Variant& t) { 
+    return get_pack_<Variant, i>::help(t).get_val(); 
+}
+
+template <size_t i, typename T>
+auto& get(T& t) {  
+    return gett<decltype(t), i>(t); 
 }
 
 
-
 int main() {
-    mylib::variant<int, std::string, int, std::string> v(11, "helanq", 33, "n");
-   std::cout <<std::any_cast<int>(gett<decltype(v), 0>(v));
+    mylib::variant<int, std::string, int, std::string> v(33, "helanq", 999, "n");
+    get<1>(v) = "aa";
+    std::cout << get<3>(v) << "\n";
 }
