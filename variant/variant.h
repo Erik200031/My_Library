@@ -48,18 +48,18 @@ namespace mylib
             return *this;
         }
         
-        // T& operator[](size_t index) {
-        //     if(index == 0) {
-        //         return value;
-        //     }
-        //    return pack[--index];
-        // }
-        // const T& operator[](size_t index) const {
-        //     if(index == 0) {
-        //         return value;
-        //     }
-        //     return pack[--index];
-        // }
+        T& operator[](size_t index) {
+            if(index == 0) {
+                return value;
+            }
+           return pack[--index];
+        }
+        const T& operator[](size_t index) const {
+            if(index == 0) {
+                return value;
+            }
+            return pack[--index];
+        }
         // T& operator[](size_t index) {
         //     if(index == 0) {
         //         return value;
@@ -203,9 +203,9 @@ namespace mylib
         auto& get_val() {
             return value;
         }
-        constexpr auto get_pack() {
-            return variant();
-        }
+        // constexpr void get_pack() {
+        //     return;
+        // }
        
         ~variant() = default;
     public:
