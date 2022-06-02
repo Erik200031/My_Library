@@ -7,7 +7,6 @@ namespace mylib
 {
     template <typename... Types>
     class variant;
-
    
     template <typename T, typename... Types>
     class variant <T, Types...>
@@ -15,9 +14,7 @@ namespace mylib
     public:
         typedef T value_type;
         constexpr variant() = default;
-        constexpr variant(const T& val, const Types&... types) : value (val), pack(types...) {
-
-        }
+        constexpr variant(const T& val, const Types&... types) : value (val), pack(types...) {}
         variant(const variant<T, Types...>& rhs) = default;
         variant(variant<T, Types...>&& rhs) = default;
         variant<T, Types...>& operator=(const variant<T, Types...>& rhs) = default;
