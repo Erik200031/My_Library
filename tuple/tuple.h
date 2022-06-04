@@ -132,33 +132,33 @@ namespace mylib
         T value;
     };
 
-    template <typename Variant, size_t IDX>
+    template <typename Tuple, size_t IDX>
     struct get_pack_
     {
-        static auto& help(Variant& v) {
+        static auto& help(Tuple& v) {
             return get_pack_<decltype(v.get_pack()), IDX - 1>::help(v.get_pack());
         }
     };
 
-    template <typename Variant>
-    struct get_pack_<Variant, 1>
+    template <typename Tuple>
+    struct get_pack_<Tuple, 1>
     {
-        static auto& help(Variant& v) {
+        static auto& help(Tuple& v) {
             return v.get_pack();
         }
     };
 
-    template <typename Variant>
-    struct get_pack_<Variant, 0>
+    template <typename Tuple>
+    struct get_pack_<Tuple, 0>
     {
-        static auto help(Variant& v) {
+        static auto help(Tuple& v) {
             return v;
         }
     };
 
-    template <typename Variant, size_t i>
-    auto& gett(Variant& t) { 
-        return get_pack_<Variant, i>::help(t).get_val(); 
+    template <typename Tuple, size_t i>
+    auto& gett(Tuple& t) { 
+        return get_pack_<Tuple, i>::help(t).get_val(); 
     }
 
     template <size_t i, typename T>

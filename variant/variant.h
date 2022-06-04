@@ -14,7 +14,7 @@ namespace mylib
     public:
         typedef T value_type;
         constexpr variant() = default;
-        constexpr variant(const T& val, const Types&... types) : value (val), pack(types...) {}
+        explicit constexpr variant(const T& val, const Types&... types) : value (val), pack(types...) {}
         variant(const variant<T, Types...>& rhs) = default;
         variant(variant<T, Types...>&& rhs) = default;
         variant<T, Types...>& operator=(const variant<T, Types...>& rhs) = default;
@@ -57,114 +57,38 @@ namespace mylib
             }
             return pack[--index];
         }
-        // T& operator[](size_t index) {
-        //     if(index == 0) {
-        //         return value;
-        //     }
-        //    return pack[--index];
-        // }
-        // const T& operator[](size_t index) const {
-        //     if(index == 0) {
-        //         return value;
-        //     }
-        //     return pack[--index];
-        // }
-
-        // auto& get_pack_val() {
-        //     return pack.pack.pack.value;
-        // } 
-
-        auto& get_val() {
-            return value;
-        }
-
-       constexpr auto& get_pack() {
-            return pack;
-        }
         
-        
-
-
-        //  T& operator[](size_t index) {
-        //     if(index == 0) {
-        //         return value;
-        //     }
-        //     auto* pk = &pack;
-        //     while (index != 1)
-        //     {
-        //         pk = &pk.pack;
-        //     }
-        //    return *pk.value;
-        // }
-
-        // const T& operator[](size_t index) const {
-        //     if(index == 0) {
-        //         return value;
-        //     }
-        //     auto * pk = &pack;
-        //     while (index != 1)
-        //     {
-        //         pk = &(*pk.pack);
-        //     }
-        //    return *pk.value;
-        // }
-        
+        auto& get_val() {return value;}
+        constexpr auto& get_pack() {return pack;}
         template <typename U>
-       U& operator[](size_t index) {
+        U& operator[](size_t index) 
+        {
             if(index == 0) {
                 return value;
             }
            return pack[--index];
         }
         template <typename U>
-        const U& operator[](size_t index) const {
+        const U& operator[](size_t index) const
+        {
             if(index == 0) {
                 return value;
             }
             return pack[--index];
         }
+
+        void swap(variant& rhs)
+        {
+            variant tmp = std::move(*this);
+            *this = std::move(rhs);
+            rhs = std::move(tmp);
+        }
          
-       
         ~variant() = default;
     public:
         T value;
         variant<Types...> pack; 
-       
     };
-
-    // template <typename T1, typename T2>
-    // class variant <T1, T2>
-    // {
-    // public:
-    //     typedef T1 fisrt_type;
-    //     typedef T2 second_type;
-    //     constexpr variant() = default;
-    //     constexpr variant(T1 val1, T2 val2) : first {val1}, second {val2} {}
-    //     variant(const variant<T1, T2>& rhs) = default;
-    //     variant(variant<T1, T2>&& rhs) = default;
-    //     variant<T1, T2>& operator=(const variant<T1, T2>& rhs) = default;
-    //     variant<T1, T2>& operator=(variant<T1, T2>&& rhs) = default;
-    //     template <typename U1, typename U2>
-    //     variant(const variant<U1, U2>& rhs) : first(rhs.first), second(rhs.second) {}
-    //     template <typename U1, typename U2>
-    //     variant(variant<U1, U2>&& rhs) : first(std::move(rhs.first)), second(std::move(rhs.second)) {}
-    //     template <typename U1, typename U2>
-    //     variant<T1, T2>& operator=(const variant<U1, U2>& rhs) {
-    //         first = rhs.fisrt;
-    //         second = rhs.second;
-    //         return *this;
-    //     }
-    //     template <typename U1, typename U2>
-    //     variant<T1, T2>& operator=(variant<U1, U2>&& rhs) {
-    //         first = std::move(rhs.fisrt);
-    //         second = std::move(rhs.second);
-    //         return *this;
-    //     }
-    //     ~variant() = default;
-    // public:
-    //     T1 first;
-    //     T2 second;
-    // };
 
     template <typename T>
     class variant <T>
@@ -172,7 +96,7 @@ namespace mylib
     public:
         typedef T value_type;
         constexpr variant() = default;
-        constexpr variant(T val) : value {val} {}
+        explicit constexpr variant(T val) : value {val} {}
         variant(const variant<T>& rhs) = default;
         variant(variant<T>&& rhs) = default;
         variant<T>& operator=(const variant<T>& rhs) = default;
@@ -191,69 +115,56 @@ namespace mylib
             value = std::move(rhs.value);
             return *this;
         }
-        auto& operator[](size_t index) {
+        auto& operator[](size_t index) {return value;}
+        const auto& operator[](size_t index) const 
+        {
             return value;
         }
-        const auto& operator[](size_t index) const {
-            return value;
+        auto& get_val() {return value;}
+        void swap(variant& rhs)
+        {
+            variant tmp = std::move(*this);
+            *this = std::move(rhs);
+            rhs = std::move(tmp);
         }
-        auto& get_val() {
-            return value;
-        }
-        // constexpr void get_pack() {
-        //     return;
-        // }
-       
         ~variant() = default;
     public:
         T value;
     };
 
+    template <typename Variant, size_t IDX>
+    struct get_pack_
+    {
+        static auto& help(Variant& v) {
+            return get_pack_<decltype(v.get_pack()), IDX - 1>::help(v.get_pack());
+        }
+    };
 
-    // template <typename... Args>
-    // class variant
-    // {
-    // public:
-    //     constexpr variant() = default;
-    //     // constexpr variant(Args... pack) {
-    //     //     mylib::assign_value<0, decltype(*this), Args...>
-    //     //     (*this, pack...);  
-    //     // }
-            
-        
-        
-    //     //variant(const variant<T>& rhs) = default;
-    //     //variant(variant<T>&& rhs) = default;
-    //     // variant<T>& operator=(const variant<T>& rhs) = default;
-    //     // variant<T>& operator=(variant<T>&& rhs) = default;
-    //     // template <typename U>
-    //     // variant(const variant<U>& rhs) : value(rhs.value) {}
-    //     // template <typename U>
-    //     // variant(variant<U>&& rhs) :  value(std::move(rhs.value)) {}
-    //     // template <typename U>
-    //     // variant<T>& operator=(const variant<U>& rhs) {
-    //     //     value = rhs.value;
-    //     //     return *this;
-    //     // }
-    //     // template <typename U>
-    //     // variant<T>& operator=(variant<U>&& rhs) {
-    //     //     value = std::move(rhs.value);
-    //     //     return *this;
-    //     // }
-    //     ~variant() = default;
-    // public:
-    //     variant<Args...> value;
-    // };
+    template <typename Variant>
+    struct get_pack_<Variant, 1>
+    {
+        static auto& help(Variant& v) {
+            return v.get_pack();
+        }
+    };
 
-    template <>
-    class variant <> {};
+    template <typename Variant>
+    struct get_pack_<Variant, 0>
+    {
+        static auto help(Variant& v) {
+            return v;
+        }
+    };
 
+    template <typename Variant, size_t i>
+    auto& gett(Variant& t) { 
+        return get_pack_<Variant, i>::help(t).get_val(); 
+    }
 
-
-
-
-
-
+    template <size_t i, typename T>
+    auto& get(T& t) {  
+        return gett<decltype(t), i>(t); 
+    }
 
 } // namespace mylib
 
