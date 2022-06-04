@@ -35,33 +35,33 @@ namespace mylib
         template <typename... Args>
         decltype(auto) emplace(Args&&... args) {m_cont.emplace_back(args...);}
         void pop (){m_cont.pop_front();}
-        void swap(stack& rhs) noexcept(std::is_nothrow_swappable_v<Container>)
+        void swap(queue& rhs) noexcept(std::is_nothrow_swappable_v<Container>)
         {
-            stack tmp = std::move(*this);
+            queue tmp = std::move(*this);
             *this = std::move(rhs);
             rhs = std::move(tmp);
         }
-        friend bool operator==(const stack& first, const stack& second) 
+        friend bool operator==(const queue& first, const queue& second) 
         {
             return first.m_cont == second.m_cont;
         }
-        friend bool operator!=(const stack& first, const stack& second) 
+        friend bool operator!=(const queue& first, const queue& second) 
         {
             return first.m_cont != second.m_cont;
         }
-        friend bool operator<(const stack& first, const stack& second) 
+        friend bool operator<(const queue& first, const queue& second) 
         {
             return first.m_cont < second.m_cont;
         }
-        friend bool operator>(const stack& first, const stack& second) 
+        friend bool operator>(const queue& first, const queue& second) 
         {
             return first.m_cont > second.m_cont;
         }
-        friend bool operator<=(const stack& first, const stack& second) 
+        friend bool operator<=(const queue& first, const queue& second) 
         {
             return first.m_cont <= second.m_cont;
         }
-        friend bool operator>=(const stack& first, const stack& second) 
+        friend bool operator>=(const queue& first, const queue& second) 
         {
             return first.m_cont >= second.m_cont;
         }
