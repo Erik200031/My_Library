@@ -11,7 +11,7 @@ namespace mylib {
     {
     public:
         vector();
-        vector(int colum,const T& value);
+        vector(int colum, const T& value);
         vector(int col);
         vector(const vector & other);
         vector(vector && other) noexcept;
