@@ -1,14 +1,12 @@
-#ifndef STACK_H
-#define STACK_H
-
-#include <type_traits>
+#ifndef QUEUE_H
+#define QUEUE_H
 
 #include "../list/list.h"
 
 namespace mylib
 {
     template <typename T, typename Container = mylib::list<T>>
-    class stack
+    class queue
     {
     public:
         typedef T value_type;
@@ -17,24 +15,26 @@ namespace mylib
         typedef size_t size_type;
         typedef Container container_type;
     public:
-        stack() : m_cont() {}
-        explicit stack(const Container& cont) : m_cont {cont} {}
-        explicit stack(Container&& cont) : m_cont {cont} {}
-        stack(const stack& rhs) = default;
-        stack(stack&& rhs) noexcept = default;
-        stack& operator=(const stack& rhs) = default;
-        stack& operator=(stack&& rhs) noexcept = default;
-        ~stack() = default;
+        queue() : m_cont() {}
+        explicit queue(const Container& cont) : m_cont {cont} {}
+        explicit queue(Container&& cont) : m_cont {cont} {}
+        queue(const queue& rhs) = default;
+        queue(queue&& rhs) noexcept = default;
+        queue& operator=(const queue& rhs) = default;
+        queue& operator=(queue&& rhs) noexcept = default;
+        ~queue() = default;
     public:
-        reference top() {return m_cont.back();}
-        const_reference top() const {return m_cont.back();}
+        reference front() {return m_cont.front();}
+        const_reference front() const {return m_cont.front();}
+        reference back() {return m_cont.back();}
+        const_reference back() const {return m_cont.back();}
         [[nodiscard]] bool empty() const { return m_cont.empty();} 
         size_type size() const {return m_cont.size();}
         void push(const value_type& value) {m_cont.push_back(value);}
         void push(value_type&& value) {m_cont.push_back(value);}
         template <typename... Args>
         decltype(auto) emplace(Args&&... args) {m_cont.emplace_back(args...);}
-        void pop (){m_cont.pop_back();}
+        void pop (){m_cont.pop_front();}
         void swap(stack& rhs) noexcept(std::is_nothrow_swappable_v<Container>)
         {
             stack tmp = std::move(*this);
@@ -68,7 +68,7 @@ namespace mylib
     protected:
         Container m_cont;
     };
-    
+        
 } // namespace mylib
 
-#endif //STACK_H
+#endif //QUEUE_H
