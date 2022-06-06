@@ -10,7 +10,8 @@ int main() {
     rb.insert(15);    
     rb.insert(16);    
     rb.insert(30);    
-    rb.insert(25);   
+    rb.insert(25); 
+    //rb.insert(1);  
     rb.insert(40);   
 
 

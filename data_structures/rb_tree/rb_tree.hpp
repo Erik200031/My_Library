@@ -116,6 +116,7 @@ void mylib::rb_tree<T>::balance(node* current)
             //     balance(current->m_parent);
             // }
         } 
+        m_root->m_color = BLACK;
     } 
 }
 
@@ -123,9 +124,9 @@ template <typename T>
 void mylib::rb_tree<T>::left_rotate(node* current)
 {
     node* current_right = current->m_right;
-    if(current->m_parent->m_value > current->m_value) {
+    if(current->m_parent && current->m_parent->m_value > current->m_value) {
         current->m_parent->m_left = current_right;
-    } else {
+    } else if(current->m_parent && current->m_parent->m_value < current->m_value) {
         current->m_parent->m_right = current_right;
     }
     current_right->m_parent = current_right->m_parent->m_parent;
