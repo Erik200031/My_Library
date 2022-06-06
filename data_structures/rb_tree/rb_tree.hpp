@@ -57,6 +57,9 @@ void mylib::rb_tree<T>::insert(const value_type& value)
     } else {
         current_parent->m_left = current;
     }
+    if(current_parent->m_color == BLACK) {
+        return;
+    }
     balance(current);
 }
 
@@ -73,6 +76,7 @@ void mylib::rb_tree<T>::balance(node* current)
             current->m_parent->m_color = BLACK;
             current->m_parent->m_parent->m_left->m_color = BLACK;
             if(current->m_parent->m_parent != m_root) {
+                current->m_parent->m_parent->m_color = RED;
                 balance(current->m_parent->m_parent);
             }
         }
@@ -84,17 +88,69 @@ void mylib::rb_tree<T>::balance(node* current)
             current->m_parent->m_color = BLACK;
             current->m_parent->m_parent->m_right->m_color = BLACK;
             if(current->m_parent->m_parent != m_root) {
+                current->m_parent->m_parent->m_color = RED;
                 balance(current->m_parent->m_parent);
             }        
         }
-    }
-     
+        else if(current->m_parent->m_parent->m_value
+         > current->m_parent->m_value  
+         && (current->m_parent->m_parent->m_right == nullptr
+         || current->m_parent->m_parent->m_right->m_color == BLACK)) {
+            left_rotate(current->m_parent);
+            right_rotate(current);
+            current->m_color = BLACK;
+            current->m_right->m_color = RED;
+            // if(current->m_parent->m_color == RED && current->m_parent != m_root) {
+            //     balance(current->m_parent);
+            // }
+        }
+        else if(current->m_parent->m_parent && current->m_parent->m_parent->m_value
+         < current->m_parent->m_value  
+         && (current->m_parent->m_parent->m_left == nullptr
+         || current->m_parent->m_parent->m_left->m_color == BLACK)) {
+           right_rotate(current);
+           left_rotate(current->m_parent);
+            current->m_color = BLACK;
+            current->m_left->m_color = RED;
+            // if(current->m_parent->m_color == RED && current->m_parent != m_root) {
+            //     balance(current->m_parent);
+            // }
+        } 
+    } 
 }
 
 template <typename T>
 void mylib::rb_tree<T>::left_rotate(node* current)
 {
     node* current_right = current->m_right;
+    if(current->m_parent->m_value > current->m_value) {
+        current->m_parent->m_left = current_right;
+    } else {
+        current->m_parent->m_right = current_right;
+    }
+    current_right->m_parent = current_right->m_parent->m_parent;
+    current->m_parent = current_right;
+    current->m_right = current_right->m_left;
+    if(current_right->m_left) {
+        current_right->m_left->m_parent = current;
+    }
+    current_right->m_left = current;
+}
+
+template <typename T>
+void mylib::rb_tree<T>::right_rotate(node* current)
+{
+    if(current->m_parent->m_parent) {
+        if(current->m_parent->m_parent->m_value > current->m_value) {
+            current->m_parent->m_parent->m_left = current;
+        } else {
+            current->m_parent->m_parent->m_right = current;
+        }
+    }
+    current->m_right = current->m_parent;
+    current->m_parent = current->m_parent->m_parent;
+    current->m_right->m_parent = current;
+    current->m_right->m_left = nullptr;
 }
 
 template <typename T>
@@ -104,7 +160,7 @@ void mylib::rb_tree<T>::m_print_in_order(node* root)
         return;
     }
     m_print_in_order(root->m_left);
-    std::cout << root->m_value << " ";
+    std::cout << "[" << root->m_color << " " <<root->m_value << "] ";
     m_print_in_order(root->m_right);
 }
 

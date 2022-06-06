@@ -44,6 +44,7 @@ namespace mylib
         void m_print_in_order(node* root);
         void balance(node* current);
         void left_rotate(node* current);
+        void right_rotate(node* current);
         
     private:
         node* m_root;
