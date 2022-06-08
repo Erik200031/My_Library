@@ -12,7 +12,10 @@ int main() {
     rb.insert(30);
     rb.insert(25);
     rb.insert(40);
-
+    rb.insert(60);
+    rb.insert(2);
+    rb.insert(1);
+    rb.insert(70);
     rb.print_in_order();
 
 

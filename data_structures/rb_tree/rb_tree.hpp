@@ -62,7 +62,6 @@ void mylib::rb_tree<T>::insert(const value_type& value)
     }
     
     balance(current);
-    std::cout << m_root->m_value;
 }
 
 template <typename T>
@@ -73,10 +72,19 @@ void mylib::rb_tree<T>::balance(node* current)
          (current->m_parent->m_right == current) &&
          (current->m_parent->m_parent->m_left == nullptr || 
          current->m_parent->m_parent->m_left->m_color == BLACK)) {
+            if(current->m_parent->m_parent)
+                current->m_parent->m_color = BLACK;
+            current->m_parent->m_parent->m_color = RED;
             left_rotate(current->m_parent->m_parent);
-            
-            current->m_left->m_color = RED;
-            current->m_right->m_color = RED;
+        }
+        else if(current->m_parent->m_parent && 
+         (current->m_parent->m_left == current) &&
+         (current->m_parent->m_parent->m_right == nullptr || 
+         current->m_parent->m_parent->m_right->m_color == BLACK)) {
+            if(current->m_parent->m_parent)
+                current->m_parent->m_color = BLACK;
+            current->m_parent->m_parent->m_color = RED;
+            right_rotate(current->m_parent->m_parent);
         }
         else if(current->m_parent->m_parent && 
          (current->m_parent->m_left == current) &&
@@ -87,7 +95,6 @@ void mylib::rb_tree<T>::balance(node* current)
             current->m_color = BLACK;
             current->m_left->m_color = RED;
             current->m_right->m_color = RED;
-            
         }
         else if(current->m_parent->m_parent && 
          (current->m_parent->m_right == current) &&
@@ -98,9 +105,7 @@ void mylib::rb_tree<T>::balance(node* current)
             current->m_color = BLACK;
             current->m_left->m_color = RED;
             current->m_right->m_color = RED;
-            
         }
-
         else if(current->m_parent->m_parent && 
          (current->m_parent->m_parent->m_left &&
          current->m_parent->m_parent->m_left->m_color == RED) ||
