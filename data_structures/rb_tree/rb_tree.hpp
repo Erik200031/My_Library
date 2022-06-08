@@ -60,98 +60,117 @@ void mylib::rb_tree<T>::insert(const value_type& value)
     if(current_parent->m_color == BLACK) {
         return;
     }
+    
     balance(current);
+    std::cout << m_root->m_value;
 }
 
 template <typename T>
 void mylib::rb_tree<T>::balance(node* current)
 {
-    if(current->m_parent->m_color == RED
-     && current->m_parent->m_parent) {
-        if(current->m_parent->m_parent->m_value 
-         < current->m_parent->m_value
-         && current->m_parent->m_parent->m_left
-         && current->m_parent->m_parent->m_left->m_color == RED) 
-        {
-            current->m_parent->m_color = BLACK;
-            current->m_parent->m_parent->m_left->m_color = BLACK;
-            if(current->m_parent->m_parent != m_root) {
-                current->m_parent->m_parent->m_color = RED;
-                balance(current->m_parent->m_parent);
-            }
-        }
-        else if(current->m_parent->m_parent->m_value 
-         > current->m_parent->m_value
-         && current->m_parent->m_parent->m_right
-         && current->m_parent->m_parent->m_right->m_color == RED)
-        {
-            current->m_parent->m_color = BLACK;
-            current->m_parent->m_parent->m_right->m_color = BLACK;
-            if(current->m_parent->m_parent != m_root) {
-                current->m_parent->m_parent->m_color = RED;
-                balance(current->m_parent->m_parent);
-            }        
-        }
-        else if(current->m_parent->m_parent->m_value
-         > current->m_parent->m_value  
-         && (current->m_parent->m_parent->m_right == nullptr
-         || current->m_parent->m_parent->m_right->m_color == BLACK)) {
-            left_rotate(current->m_parent);
-            right_rotate(current);
-            current->m_color = BLACK;
+    if(current->m_parent && current->m_parent->m_color == RED) {
+        if(current->m_parent->m_parent && 
+         (current->m_parent->m_right == current) &&
+         (current->m_parent->m_parent->m_left == nullptr || 
+         current->m_parent->m_parent->m_left->m_color == BLACK)) {
+            left_rotate(current->m_parent->m_parent);
+            
+            current->m_left->m_color = RED;
             current->m_right->m_color = RED;
-            // if(current->m_parent->m_color == RED && current->m_parent != m_root) {
-            //     balance(current->m_parent);
-            // }
         }
-        else if(current->m_parent->m_parent && current->m_parent->m_parent->m_value
-         < current->m_parent->m_value  
-         && (current->m_parent->m_parent->m_left == nullptr
-         || current->m_parent->m_parent->m_left->m_color == BLACK)) {
-           right_rotate(current);
-           left_rotate(current->m_parent);
+        else if(current->m_parent->m_parent && 
+         (current->m_parent->m_left == current) &&
+         (current->m_parent->m_parent->m_left == nullptr || 
+         current->m_parent->m_parent->m_left->m_color == BLACK)) {
+            right_rotate(current->m_parent);
+            left_rotate(current->m_parent);
             current->m_color = BLACK;
             current->m_left->m_color = RED;
-            // if(current->m_parent->m_color == RED && current->m_parent != m_root) {
-            //     balance(current->m_parent);
-            // }
+            current->m_right->m_color = RED;
+            
+        }
+        else if(current->m_parent->m_parent && 
+         (current->m_parent->m_right == current) &&
+         (current->m_parent->m_parent->m_right == nullptr || 
+         current->m_parent->m_parent->m_right->m_color == BLACK)) {
+            left_rotate(current->m_parent);
+            right_rotate(current->m_parent);
+            current->m_color = BLACK;
+            current->m_left->m_color = RED;
+            current->m_right->m_color = RED;
+            
+        }
+
+        else if(current->m_parent->m_parent && 
+         (current->m_parent->m_parent->m_left &&
+         current->m_parent->m_parent->m_left->m_color == RED) ||
+         (current->m_parent->m_parent->m_right &&
+         current->m_parent->m_parent->m_right->m_color == RED)) {
+            current->m_parent->m_color = BLACK;
+            if(current->m_parent->m_parent->m_left)
+                current->m_parent->m_parent->m_left->m_color = BLACK;
+            if(current->m_parent->m_parent->m_right)
+                current->m_parent->m_parent->m_right->m_color = BLACK;
+            if(current->m_parent->m_parent != m_root) {
+                current->m_parent->m_parent->m_color = RED;
+            }
+            
         } 
-        m_root->m_color = BLACK;
-    } 
+        if(current->m_parent->m_parent && 
+         current->m_parent->m_parent != m_root &&
+         current->m_parent->m_parent->m_color == RED) {
+            balance(current->m_parent->m_parent);
+        }
+    }
+    m_root->m_color = BLACK;
 }
 
 template <typename T>
 void mylib::rb_tree<T>::left_rotate(node* current)
 {
-    node* current_right = current->m_right;
-    if(current->m_parent && current->m_parent->m_value > current->m_value) {
-        current->m_parent->m_left = current_right;
-    } else if(current->m_parent && current->m_parent->m_value < current->m_value) {
-        current->m_parent->m_right = current_right;
+    node* cur_right = current->m_right;
+    node* w_node {};
+    if(current->m_right->m_left) {
+        w_node = current->m_right->m_left;
+        w_node->m_parent = current;
     }
-    current_right->m_parent = current_right->m_parent->m_parent;
-    current->m_parent = current_right;
-    current->m_right = current_right->m_left;
-    if(current_right->m_left) {
-        current_right->m_left->m_parent = current;
+    if(current->m_parent) {
+        if(current->m_value < current->m_parent->m_value) {
+            current->m_parent->m_left = cur_right;
+        } else {
+            current->m_parent->m_right = cur_right;
+        }
+    } else {
+        m_root = cur_right;
     }
-    current_right->m_left = current;
+    cur_right->m_parent = current->m_parent;
+    cur_right->m_left = current;
+    current->m_parent = cur_right;
+    current->m_right = w_node;
 }
 
 template <typename T>
 void mylib::rb_tree<T>::right_rotate(node* current)
 {
-    if(current->m_parent->m_parent) {
-        if(current->m_parent->m_parent->m_value > current->m_value) {
-            current->m_parent->m_parent->m_left = current;
-        } else {
-            current->m_parent->m_parent->m_right = current;
-        }
+    node* cur_left = current->m_left;
+    node* w_node {};
+    if(current->m_left->m_right) {
+        w_node = current->m_left->m_right;
+        w_node->m_parent = current;
     }
-    current->m_right = current->m_parent;
-    current->m_parent = current->m_parent->m_parent;
-    current->m_right->m_parent = current;
-    current->m_right->m_left = nullptr;
+    if(current->m_parent) {
+        if(current->m_value < current->m_parent->m_value) {
+            current->m_parent->m_left = cur_left;
+        } else {
+            current->m_parent->m_right = cur_left;
+        }
+    } else {
+        m_root = cur_left;
+    }
+    cur_left->m_parent = current->m_parent;
+    cur_left->m_right = current;
+    current->m_parent = cur_left;
+    current->m_left = w_node;
 }
 
 template <typename T>
