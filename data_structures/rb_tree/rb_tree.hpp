@@ -60,7 +60,6 @@ void mylib::rb_tree<T>::insert(const value_type& value)
     if(current_parent->m_color == BLACK) {
         return;
     }
-    
     balance(current);
 }
 
@@ -140,6 +139,7 @@ void mylib::rb_tree<T>::left_rotate(node* current)
         w_node->m_parent = current;
     }
     if(current->m_parent) {
+        cur_right->m_parent = current->m_parent;
         if(current->m_value < current->m_parent->m_value) {
             current->m_parent->m_left = cur_right;
         } else {
@@ -148,7 +148,6 @@ void mylib::rb_tree<T>::left_rotate(node* current)
     } else {
         m_root = cur_right;
     }
-    cur_right->m_parent = current->m_parent;
     cur_right->m_left = current;
     current->m_parent = cur_right;
     current->m_right = w_node;
@@ -164,6 +163,7 @@ void mylib::rb_tree<T>::right_rotate(node* current)
         w_node->m_parent = current;
     }
     if(current->m_parent) {
+        cur_left->m_parent = current->m_parent;
         if(current->m_value < current->m_parent->m_value) {
             current->m_parent->m_left = cur_left;
         } else {
@@ -172,7 +172,6 @@ void mylib::rb_tree<T>::right_rotate(node* current)
     } else {
         m_root = cur_left;
     }
-    cur_left->m_parent = current->m_parent;
     cur_left->m_right = current;
     current->m_parent = cur_left;
     current->m_left = w_node;
@@ -193,4 +192,123 @@ template <typename T>
 void mylib::rb_tree<T>::print_in_order() 
 {
     m_print_in_order(m_root);
+}
+
+template <typename T>
+void mylib::rb_tree<T>::remove(const value_type& value)
+{
+    node* current = search(value);
+    if(!current) {
+        return;
+    }
+    
+    if((current->m_color == RED || current == m_root) && current->m_left == nullptr && current->m_right == nullptr) {
+        remove_case_1(current);
+    }
+    else if(current->m_left || current->m_right) {
+        node* delete_ptr;
+        if(current->m_left) {
+            delete_ptr = search_in_order_predecessor(current->m_left);
+            current->m_value = delete_ptr->m_value;
+        } else {
+            delete_ptr = search_in_order_successor(current->m_right);
+            current->m_value = delete_ptr->m_value;
+        }
+        if(delete_ptr->m_color == RED && 
+        current->m_left == nullptr && 
+        current->m_right == nullptr) {
+            remove_case_1(delete_ptr);
+        }
+        else if(delete_ptr->m_color == BLACK && 
+        delete_ptr->m_parent && 
+        delete_ptr->m_parent->m_color == RED &&
+        delete_ptr->m_parent->m_right &&
+        delete_ptr->m_parent->m_right->m_color == BLACK && 
+        !delete_ptr->m_parent->m_right->m_left &&
+        !delete_ptr->m_parent->m_right->m_right) {
+            remove_case_2(delete_ptr);
+        }
+        else if(delete_ptr->m_color == BLACK && 
+        delete_ptr->m_parent && 
+        delete_ptr->m_parent->m_color == RED &&
+        delete_ptr->m_parent->m_left &&
+        delete_ptr->m_parent->m_left->m_color == BLACK && 
+        !delete_ptr->m_parent->m_left->m_left &&
+        !delete_ptr->m_parent->m_left->m_right) {
+            remove_case_3(delete_ptr);
+        }
+    }
+
+
+
+    else if(current->m_left && )
+    
+}
+
+template <typename T>
+typename mylib::rb_tree<T>::node* mylib::rb_tree<T>::search_in_order_successor(node* current)
+{
+    while(current) {
+        current = current->m_left;
+    }
+    return current;
+}
+
+template <typename T>
+typename mylib::rb_tree<T>::node* mylib::rb_tree<T>::search_in_order_predecessor(node* current)
+{
+    while(current) {
+        current = current->m_right;
+    }
+    return current;
+}
+
+template <typename T>
+void mylib::rb_tree<T>::remove_case_1(node* current)
+{
+    node* current_parent = current->m_parent;
+    if(current->m_parent && current_parent->m_left == current) {
+        current_parent->m_left = nullptr;
+    } else if (current->m_parent && current_parent->m_right == current) {
+        current_parent->m_right = nullptr;
+    }
+    delete current;
+    if(current == m_root) {
+        m_root = nullptr;
+    }
+    current = nullptr;
+}
+
+template <typename T>
+void mylib::rb_tree<T>::remove_case_2(node* current)
+{
+    current->m_parent->m_color = BLACK;
+    current->m_parent->m_right->m_color = RED;
+    current->m_parent->m_left = nullptr;
+    delete current;
+}
+
+template <typename T>
+void mylib::rb_tree<T>::remove_case_3(node* current)
+{
+    current->m_parent->m_color = BLACK;
+    current->m_parent->m_left->m_color = RED;
+    current->m_parent->m_right = nullptr;
+    delete current;
+}
+
+template <typename T>
+typename mylib::rb_tree<T>::node* mylib::rb_tree<T>::search(const value_type& value)
+{
+    node* current = m_root;
+    while (current != nullptr) {
+        if(current->m_value < value) {
+            current = current->m_right;
+        } else if(current->m_value == value) {
+            return current;
+        } else {
+            current = current->m_left;
+        }
+    }
+    return nullptr;
 }

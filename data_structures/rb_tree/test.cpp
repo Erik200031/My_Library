@@ -4,19 +4,18 @@
 
 int main() {
     mylib::rb_tree<int> rb;
-    rb.insert(10);
-    rb.insert(18);
+
     rb.insert(7);
-    rb.insert(15);
-    rb.insert(16);
-    rb.insert(30);
-    rb.insert(25);
-    rb.insert(40);
-    rb.insert(60);
-    rb.insert(2);
-    rb.insert(1);
-    rb.insert(70);
-    rb.print_in_order();
+    rb.insert(10);
+    rb.insert(8);
+    rb.insert(9);
+        rb.print_in_order();
+          rb.remove(10);
+std::cout << '\n';
+
+   
+        rb.print_in_order();
+
 
 
 }
