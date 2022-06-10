@@ -58,6 +58,9 @@ namespace mylib
         void remove_case_3(node* currect);
         void remove_case_4(node* currect);
         void remove_case_5(node* currect);
+        void remove_case_6(node* currect);
+        void remove_case_7(node* currect);
+        
     private:
         node* m_root;
     };
