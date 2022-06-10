@@ -20,7 +20,7 @@ namespace mylib
         {
             friend class rb_tree;
             node() : m_parent {}, m_left {}, 
-            m_right {}, m_color {}, db{} {}
+            m_right {}, m_color {} {}
             node(node* parent, node* left,
              node* right, bool color, const value_type& value) 
             : m_parent {parent}, m_left {left}, 
@@ -31,7 +31,6 @@ namespace mylib
             node* m_left;
             node* m_right;
             bool m_color;
-            bool db;
             value_type m_value;
         };
 
@@ -60,7 +59,9 @@ namespace mylib
         void remove_case_5(node* currect);
         void remove_case_6(node* currect);
         void remove_case_7(node* currect);
-        
+        void remove_case_8(node* currect);
+        void remove_case_9(node* currect);
+        void remove_case_10(node* currect);
     private:
         node* m_root;
     };

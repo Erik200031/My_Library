@@ -300,14 +300,56 @@ void mylib::rb_tree<T>::remove(const value_type& value)
      delete_ptr->m_parent->m_right == delete_ptr &&
      delete_ptr->m_parent->m_left && 
      delete_ptr->m_parent->m_left->m_color == BLACK && 
-     (!delete_ptr->m_parent->m_left->m_left ||
-     delete_ptr->m_parent->m_left->m_left && 
-     delete_ptr->m_parent->m_left->m_left->m_color == BLACK) &&
-     (!delete_ptr->m_parent->m_left->m_right ||
-     delete_ptr->m_parent->m_left->m_right && 
-     delete_ptr->m_parent->m_left->m_right->m_color == BLACK)) {
+     ((delete_ptr->m_parent->m_left->m_left == nullptr) ||
+     (delete_ptr->m_parent->m_left->m_left && 
+     delete_ptr->m_parent->m_left->m_left->m_color == BLACK)) &&
+     ((delete_ptr->m_parent->m_left->m_right == nullptr) ||
+     (delete_ptr->m_parent->m_left->m_right && 
+     delete_ptr->m_parent->m_left->m_right->m_color == BLACK))) {
         remove_case_7(delete_ptr);
     }
+    else if(delete_ptr->m_color == BLACK && 
+     delete_ptr->m_parent &&
+     delete_ptr->m_parent->m_color == BLACK &&
+     delete_ptr->m_parent->m_left == delete_ptr &&
+     delete_ptr->m_parent->m_right && 
+     delete_ptr->m_parent->m_right->m_color == RED && 
+     ((delete_ptr->m_parent->m_right->m_left == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_left && 
+     delete_ptr->m_parent->m_right->m_left->m_color == BLACK)) &&
+     ((delete_ptr->m_parent->m_right->m_right == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_right && 
+     delete_ptr->m_parent->m_right->m_right->m_color == BLACK))) {
+        remove_case_8(delete_ptr);
+    }
+    else if(delete_ptr->m_color == BLACK && 
+     delete_ptr->m_parent &&
+     delete_ptr->m_parent->m_color == BLACK &&
+     delete_ptr->m_parent->m_right == delete_ptr &&
+     delete_ptr->m_parent->m_left && 
+     delete_ptr->m_parent->m_left->m_color == RED && 
+     ((delete_ptr->m_parent->m_left->m_left == nullptr) ||
+     (delete_ptr->m_parent->m_left->m_left && 
+     delete_ptr->m_parent->m_left->m_left->m_color == BLACK)) &&
+     ((delete_ptr->m_parent->m_left->m_right == nullptr) ||
+     (delete_ptr->m_parent->m_left->m_right && 
+     delete_ptr->m_parent->m_left->m_right->m_color == BLACK))) {
+        remove_case_9(delete_ptr);
+    }
+    // else if(delete_ptr->m_color == BLACK && 
+    //  delete_ptr->m_parent &&
+    //  delete_ptr->m_parent->m_color == BLACK &&
+    //  delete_ptr->m_parent->m_left == delete_ptr &&
+    //  delete_ptr->m_parent->m_right && 
+    //  delete_ptr->m_parent->m_right->m_color == RED && 
+    //  ((delete_ptr->m_parent->m_right->m_left == nullptr) ||
+    //  (delete_ptr->m_parent->m_right->m_left && 
+    //  delete_ptr->m_parent->m_right->m_left->m_color == BLACK)) &&
+    //  ((delete_ptr->m_parent->m_right->m_right == nullptr) ||
+    //  (delete_ptr->m_parent->m_right->m_right && 
+    //  delete_ptr->m_parent->m_right->m_right->m_color == BLACK))) {
+    //     remove_case_10(delete_ptr);
+    // }
 }
 
 template <typename T>
@@ -350,6 +392,7 @@ void mylib::rb_tree<T>::remove_case_2(node* current)
     if(current->m_right) {
         left_rotate(current);
     }
+    current->m_parent->m_right->m_color = RED;
     current->m_parent->m_color = BLACK;
     current->m_parent->m_left = nullptr;
     delete current;
@@ -361,6 +404,7 @@ void mylib::rb_tree<T>::remove_case_3(node* current)
     if(current->m_left) {
         right_rotate(current);
     }
+    current->m_parent->m_left->m_color = RED;
     current->m_parent->m_color = BLACK;
     current->m_parent->m_right = nullptr;
     delete current;
@@ -407,13 +451,66 @@ void mylib::rb_tree<T>::remove_case_6(node* current)
       ((!current_parent->m_parent->m_left ||
       current_parent->m_parent->m_left &&
       current_parent->m_parent->m_left->m_color == BLACK) && 
-      current_parent->m_parent->m_left != current_parent) ||
+      current_parent->m_parent->m_left != current_parent &&
+      ((current_parent->m_parent->m_left->m_left == nullptr) ||
+      (current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == BLACK) &&
+      (current_parent->m_parent->m_left->m_right == nullptr) ||
+      (current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == BLACK)) || 
       ((!current_parent->m_parent->m_right ||
       current_parent->m_parent->m_right &&
       current_parent->m_parent->m_right->m_color == BLACK) &&
-      current_parent->m_parent->m_right != current_parent)) {
-        if(current_parent->m_parent->m_left) {
+      current_parent->m_parent->m_right != current_parent) &&
+      ((current_parent->m_parent->m_left->m_left == nullptr) ||
+      (current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == BLACK) &&
+      (current_parent->m_parent->m_left->m_right == nullptr) ||
+      (current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == BLACK)))) {
+        if(current_parent->m_parent->m_left && 
+        current_parent->m_parent->m_left != current_parent) {
             current_parent->m_parent->m_left->m_color = RED;
+        }
+        if(current_parent->m_parent->m_right && 
+        current_parent->m_parent->m_right != current_parent) {
+            current_parent->m_parent->m_left->m_color = RED;
+        }
+        if(current_parent->m_parent != m_root) {
+            current_parent = current_parent->m_parent;
+        }
+    }
+    while(current_parent->m_parent->m_color == BLACK && 
+      ((!current_parent->m_parent->m_left ||
+      current_parent->m_parent->m_left &&
+      current_parent->m_parent->m_left->m_color == BLACK) && 
+      current_parent->m_parent->m_left != current_parent &&
+      ((current_parent->m_parent->m_left->m_left == nullptr) ||
+      (current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == BLACK) &&
+      (current_parent->m_parent->m_left->m_right == nullptr) ||
+      (current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == BLACK)) || 
+      ((!current_parent->m_parent->m_right ||
+      current_parent->m_parent->m_right &&
+      current_parent->m_parent->m_right->m_color == BLACK) &&
+      current_parent->m_parent->m_right != current_parent) &&
+      ((current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == RED) &&
+      (current_parent->m_parent->m_left->m_right == nullptr) ||
+      (current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == BLACK)))) {
+        if(current_parent->m_parent->m_right &&
+        current_parent->m_parent->m_right->m_left && 
+        current_parent->m_parent->m_right->m_left->m_color == RED) {
+            current_parent->m_parent->m_right->m_color = RED;
+            current_parent->m_parent->m_right->m_left->m_color = BLACK;
+            right_rotate(current_parent->m_parent->m_right);
+            bool tmp = current_parent->m_parent->m_color;
+            current_parent->m_parent->m_color = current_parent->m_parent->m_right->m_color;
+            current_parent->m_parent->m_right->m_color = tmp;
+            left_rotate(current_parent->m_parent->m_right->m_color);
+            current_parent->m_parent->m_parent->m_right->m_color = BLACK;
         }
         if(current_parent->m_parent != m_root) {
             current_parent = current_parent->m_parent;
@@ -438,13 +535,118 @@ void mylib::rb_tree<T>::remove_case_7(node* current)
       ((!current_parent->m_parent->m_left ||
       current_parent->m_parent->m_left &&
       current_parent->m_parent->m_left->m_color == BLACK) && 
-      current_parent->m_parent->m_left != current_parent) ||
+      current_parent->m_parent->m_left != current_parent &&
+      ((current_parent->m_parent->m_left->m_left == nullptr) ||
+      (current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == BLACK) &&
+      (current_parent->m_parent->m_left->m_right == nullptr) ||
+      (current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == BLACK)) || 
       ((!current_parent->m_parent->m_right ||
       current_parent->m_parent->m_right &&
       current_parent->m_parent->m_right->m_color == BLACK) &&
-      current_parent->m_parent->m_right != current_parent)) {
-        if(current_parent->m_parent->m_left) {
+      current_parent->m_parent->m_right != current_parent) &&
+      ((current_parent->m_parent->m_left->m_left == nullptr) ||
+      (current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == BLACK) &&
+      (current_parent->m_parent->m_left->m_right == nullptr) ||
+      (current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == BLACK)))) {
+        if(current_parent->m_parent->m_left && 
+        current_parent->m_parent->m_left != current_parent) {
             current_parent->m_parent->m_left->m_color = RED;
+        }
+        if(current_parent->m_parent->m_right && 
+        current_parent->m_parent->m_right != current_parent) {
+            current_parent->m_parent->m_left->m_color = RED;
+        }
+        if(current_parent->m_parent != m_root) {
+            current_parent = current_parent->m_parent;
+        }
+    }
+    while(current_parent->m_parent->m_color == BLACK && 
+      ((!current_parent->m_parent->m_left ||
+      current_parent->m_parent->m_left &&
+      current_parent->m_parent->m_left->m_color == BLACK) && 
+      current_parent->m_parent->m_left != current_parent &&
+      ((current_parent->m_parent->m_left->m_left == nullptr) ||
+      (current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == BLACK) &&
+      ((current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == RED)) || 
+      ((!current_parent->m_parent->m_right ||
+      current_parent->m_parent->m_right &&
+      current_parent->m_parent->m_right->m_color == BLACK) &&
+      current_parent->m_parent->m_right != current_parent) &&
+      ((current_parent->m_parent->m_right->m_left && 
+      current_parent->m_parent->m_right->m_left->m_color == RED) &&
+      (current_parent->m_parent->m_right->m_right == nullptr) ||
+      (current_parent->m_parent->m_right->m_right && 
+      current_parent->m_parent->m_right->m_right->m_color == BLACK))))) {
+        if(current_parent->m_parent->m_right &&
+        current_parent->m_parent->m_right->m_left && 
+        current_parent->m_parent->m_right->m_left->m_color == RED) {
+            current_parent->m_parent->m_right->m_color = RED;
+            current_parent->m_parent->m_right->m_left->m_color = BLACK;
+            right_rotate(current_parent->m_parent->m_right);
+            bool tmp = current_parent->m_parent->m_color;
+            current_parent->m_parent->m_color = current_parent->m_parent->m_right->m_color;
+            current_parent->m_parent->m_right->m_color = tmp;
+            left_rotate(current_parent->m_parent->m_right->m_color);
+            current_parent->m_parent->m_parent->m_right->m_color = BLACK;
+        }
+        if(current_parent->m_parent->m_left &&
+        current_parent->m_parent->m_left->m_left && 
+        current_parent->m_parent->m_left->m_right->m_color == RED) {
+            current_parent->m_parent->m_left->m_color = RED;
+            current_parent->m_parent->m_left->m_right->m_color = BLACK;
+            left_rotate(current_parent->m_parent->m_right);
+            bool tmp = current_parent->m_parent->m_color;
+            current_parent->m_parent->m_color = current_parent->m_parent->m_left->m_color;
+            current_parent->m_parent->m_left->m_color = tmp;
+            right_rotate(current_parent->m_parent->m_left->m_color);
+            current_parent->m_parent->m_parent->m_left->m_color = BLACK;
+        }
+        if(current_parent->m_parent != m_root) {
+            current_parent = current_parent->m_parent;
+        }
+    }  
+    while(current_parent->m_parent->m_color == BLACK && 
+      ((!current_parent->m_parent->m_left ||
+      current_parent->m_parent->m_left &&
+      current_parent->m_parent->m_left->m_color == BLACK) && 
+      current_parent->m_parent->m_left != current_parent &&
+      ((current_parent->m_parent->m_left->m_right == nullptr) ||
+      (current_parent->m_parent->m_left->m_right && 
+      current_parent->m_parent->m_left->m_right->m_color == BLACK) &&
+      ((current_parent->m_parent->m_left->m_left && 
+      current_parent->m_parent->m_left->m_left->m_color == RED)) || 
+      ((!current_parent->m_parent->m_right ||
+      current_parent->m_parent->m_right &&
+      current_parent->m_parent->m_right->m_color == BLACK) &&
+      current_parent->m_parent->m_right != current_parent) &&
+      ((current_parent->m_parent->m_right->m_right && 
+      current_parent->m_parent->m_right->m_right->m_color == RED) &&
+      (current_parent->m_parent->m_right->m_left == nullptr) ||
+      (current_parent->m_parent->m_right->m_left && 
+      current_parent->m_parent->m_right->m_left->m_color == BLACK))))) {
+        if(current_parent->m_parent->m_right &&
+        current_parent->m_parent->m_right->m_right && 
+        current_parent->m_parent->m_right->m_right->m_color == RED) {
+            bool tmp = current_parent->m_parent->m_color;
+            current_parent->m_parent->m_color = current_parent->m_parent->m_right->m_color;
+            current_parent->m_parent->m_right->m_color = tmp;
+            left_rotate(current_parent->m_parent->m_right->m_color);
+            current_parent->m_parent->m_parent->m_right->m_color = BLACK;
+        }
+        if(current_parent->m_parent->m_left &&
+        current_parent->m_parent->m_left->m_left && 
+        current_parent->m_parent->m_left->m_left->m_color == RED) {
+            bool tmp = current_parent->m_parent->m_color;
+            current_parent->m_parent->m_color = current_parent->m_parent->m_left->m_color;
+            current_parent->m_parent->m_left->m_color = tmp;
+            right_rotate(current_parent->m_parent->m_left->m_color);
+            current_parent->m_parent->m_parent->m_left->m_color = BLACK;
         }
         if(current_parent->m_parent != m_root) {
             current_parent = current_parent->m_parent;
@@ -452,6 +654,29 @@ void mylib::rb_tree<T>::remove_case_7(node* current)
     }
 }
 
+template <typename T>
+void mylib::rb_tree<T>::remove_case_8(node* current)
+{
+   current->m_parent->m_color = RED;
+   current->m_parent->m_right->m_color = BLACK;
+   left_rotate(current->m_parent);
+   remove_case_2(current);
+}
+
+template <typename T>
+void mylib::rb_tree<T>::remove_case_9(node* current)
+{
+   current->m_parent->m_color = RED;
+   current->m_parent->m_left->m_color = BLACK;
+   right_rotate(current->m_parent);
+   remove_case_3(current);
+}
+
+template <typename T>
+void mylib::rb_tree<T>::remove_case_10(node* current)
+{
+   
+}
 
 template <typename T>
 typename mylib::rb_tree<T>::node* mylib::rb_tree<T>::search(const value_type& value)
