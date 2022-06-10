@@ -201,7 +201,6 @@ void mylib::rb_tree<T>::remove(const value_type& value)
 {
     node* current = search(value);
     node* delete_ptr;
-
     if(!current) {
         return;
     }
@@ -209,11 +208,6 @@ void mylib::rb_tree<T>::remove(const value_type& value)
      current->m_left == nullptr && current->m_right == nullptr) {
         remove_case_1(current);
     }
-    // else if((current->m_color == BLACK) &&
-    //  current->m_left == nullptr && current->m_right == nullptr)
-    // {
-    //     remove_case_5(current);
-    // }
     else if(current->m_left || current->m_right) {
         if(current->m_right) {
             delete_ptr = search_in_order_successor(current->m_right);
@@ -222,115 +216,97 @@ void mylib::rb_tree<T>::remove(const value_type& value)
             delete_ptr = search_in_order_predecessor(current->m_left);
             current->m_value = delete_ptr->m_value;
         }
-        if(delete_ptr->m_color == RED && 
-        delete_ptr->m_left == nullptr && 
-        delete_ptr->m_right == nullptr) {
-            remove_case_1(delete_ptr);
-        }
-        else if((delete_ptr->m_color == BLACK && 
-        delete_ptr->m_parent && 
-        delete_ptr->m_parent->m_color == RED &&
-        delete_ptr->m_parent->m_left == delete_ptr &&
-        delete_ptr->m_parent->m_right &&
-        delete_ptr->m_parent->m_right->m_color == BLACK) && 
-        (!delete_ptr->m_parent->m_right->m_left ||
-        delete_ptr->m_parent->m_right->m_left && 
-        delete_ptr->m_parent->m_right->m_left->m_color == BLACK) ||
-        (!delete_ptr->m_parent->m_right->m_right ||
-        delete_ptr->m_parent->m_right->m_right && 
-        delete_ptr->m_parent->m_right->m_right->m_color == BLACK)) {
-            remove_case_2(delete_ptr);
-        }
-        else if(delete_ptr->m_color == BLACK && 
-        delete_ptr->m_parent && 
-        delete_ptr->m_parent->m_color == RED &&
-        delete_ptr->m_parent->m_right == delete_ptr &&
-        delete_ptr->m_parent->m_left &&
-        delete_ptr->m_parent->m_left->m_color == BLACK && 
-        (!delete_ptr->m_parent->m_right->m_left ||
-        delete_ptr->m_parent->m_left->m_left && 
-        delete_ptr->m_parent->m_left->m_left->m_color == BLACK) ||
-        (!delete_ptr->m_parent->m_left->m_right ||
-        delete_ptr->m_parent->m_left->m_right && 
-        delete_ptr->m_parent->m_left->m_right->m_color == BLACK)) {
-            remove_case_3(delete_ptr);
-        }
-        else if(delete_ptr->m_color == BLACK && 
-        delete_ptr->m_parent && 
-        delete_ptr->m_parent->m_color == BLACK &&
-        delete_ptr->m_parent->m_left == delete_ptr &&
-        delete_ptr->m_parent->m_right &&
-        delete_ptr->m_parent->m_right->m_color == BLACK && 
-        (!delete_ptr->m_parent->m_right->m_left ||
-        delete_ptr->m_parent->m_right->m_left && 
-        delete_ptr->m_parent->m_right->m_left->m_color == BLACK) ||
-        (!delete_ptr->m_parent->m_right->m_right ||
-        delete_ptr->m_parent->m_right->m_right && 
-        delete_ptr->m_parent->m_right->m_right->m_color == BLACK)) {
-            remove_case_4(delete_ptr);
-        }
-        else if(delete_ptr->m_color == BLACK && 
-        delete_ptr->m_parent && 
-        delete_ptr->m_parent->m_color == BLACK &&
-        delete_ptr->m_parent->m_left == delete_ptr &&
-        delete_ptr->m_parent->m_right &&
-        delete_ptr->m_parent->m_right->m_color == BLACK && 
-        (!delete_ptr->m_parent->m_left->m_left ||
-        delete_ptr->m_parent->m_left->m_left && 
-        delete_ptr->m_parent->m_left->m_left->m_color == BLACK) ||
-        (!delete_ptr->m_parent->m_left->m_right ||
-        delete_ptr->m_parent->m_left->m_right && 
-        delete_ptr->m_parent->m_left->m_right->m_color == BLACK)) {
-            remove_case_5(delete_ptr);
-        }
-
-        else if(delete_ptr->m_color == BLACK && 
-        delete_ptr->m_parent &&
-        delete_ptr->m_parent->m_color == BLACK &&
-        delete_ptr->m_parent->m_left == delete_ptr &&
-        delete_ptr->m_parent->m_right && 
-        delete_ptr->m_parent->m_right->m_color == BLACK && 
-        (!delete_ptr->m_parent->m_right->m_left ||
-        delete_ptr->m_parent->m_right->m_left && 
-        delete_ptr->m_parent->m_right->m_left->m_color == BLACK) ||
-        (!delete_ptr->m_parent->m_right->m_right ||
-        delete_ptr->m_parent->m_right->m_right && 
-        delete_ptr->m_parent->m_right->m_right->m_color == BLACK)) {
-            remove_case_6(delete_ptr);
-        }
-        else if(delete_ptr->m_color == BLACK && 
-        delete_ptr->m_parent &&
-        delete_ptr->m_parent->m_color == BLACK &&
-        delete_ptr->m_parent->m_right == delete_ptr &&
-        delete_ptr->m_parent->m_left && 
-        delete_ptr->m_parent->m_left->m_color == BLACK && 
-        (!delete_ptr->m_parent->m_left->m_left ||
-        delete_ptr->m_parent->m_left->m_left && 
-        delete_ptr->m_parent->m_left->m_left->m_color == BLACK) ||
-        (!delete_ptr->m_parent->m_left->m_right ||
-        delete_ptr->m_parent->m_left->m_right && 
-        delete_ptr->m_parent->m_left->m_right->m_color == BLACK)) {
-            remove_case_7(delete_ptr);
-        }
-
+    } else {
+        delete_ptr = current;
     }
-
-    delete_ptr = current;
-    if((delete_ptr->m_color == BLACK && 
+    if(delete_ptr->m_color == RED && 
+     delete_ptr->m_left == nullptr && 
+     delete_ptr->m_right == nullptr) {
+        remove_case_1(delete_ptr);
+    }
+    else if((delete_ptr->m_color == BLACK && 
      delete_ptr->m_parent && 
      delete_ptr->m_parent->m_color == RED &&
      delete_ptr->m_parent->m_left == delete_ptr &&
      delete_ptr->m_parent->m_right &&
-     delete_ptr->m_parent->m_right->m_color == BLACK)) {
+     delete_ptr->m_parent->m_right->m_color == BLACK) && 
+     ((delete_ptr->m_parent->m_right->m_left == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_left && 
+     delete_ptr->m_parent->m_right->m_left->m_color == BLACK)) &&
+     ((delete_ptr->m_parent->m_right->m_right == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_right && 
+     delete_ptr->m_parent->m_right->m_right->m_color == BLACK))) {
         remove_case_2(delete_ptr);
     }
-    if(delete_ptr->m_color == BLACK && 
+    else if(delete_ptr->m_color == BLACK && 
+     delete_ptr->m_parent && 
+     delete_ptr->m_parent->m_color == RED &&
+     delete_ptr->m_parent->m_right == delete_ptr &&
+     delete_ptr->m_parent->m_left &&
+     delete_ptr->m_parent->m_left->m_color == BLACK && 
+     (!delete_ptr->m_parent->m_right->m_left ||
+     delete_ptr->m_parent->m_left->m_left && 
+     delete_ptr->m_parent->m_left->m_left->m_color == BLACK) &&
+     (!delete_ptr->m_parent->m_left->m_right ||
+     delete_ptr->m_parent->m_left->m_right && 
+     delete_ptr->m_parent->m_left->m_right->m_color == BLACK)) {
+        remove_case_3(delete_ptr);
+    }
+    else if(delete_ptr->m_color == BLACK && 
+     delete_ptr->m_parent && 
+     delete_ptr->m_parent->m_color == BLACK &&
+     delete_ptr->m_parent->m_left == delete_ptr &&
+     delete_ptr->m_parent->m_right &&
+     delete_ptr->m_parent->m_right->m_color == BLACK && 
+     (!delete_ptr->m_parent->m_right->m_left ||
+     delete_ptr->m_parent->m_right->m_left && 
+     delete_ptr->m_parent->m_right->m_left->m_color == BLACK) &&
+     (!delete_ptr->m_parent->m_right->m_right ||
+     delete_ptr->m_parent->m_right->m_right && 
+     delete_ptr->m_parent->m_right->m_right->m_color == BLACK)) {
+        remove_case_4(delete_ptr);
+    }
+    else if(delete_ptr->m_color == BLACK && 
+     delete_ptr->m_parent && 
+     delete_ptr->m_parent->m_color == BLACK &&
+     delete_ptr->m_parent->m_left == delete_ptr &&
+     delete_ptr->m_parent->m_right &&
+     delete_ptr->m_parent->m_right->m_color == BLACK && 
+     (!delete_ptr->m_parent->m_left->m_left ||
+     delete_ptr->m_parent->m_left->m_left && 
+     delete_ptr->m_parent->m_left->m_left->m_color == BLACK) &&
+     (!delete_ptr->m_parent->m_left->m_right ||
+     delete_ptr->m_parent->m_left->m_right && 
+     delete_ptr->m_parent->m_left->m_right->m_color == BLACK)) {
+        remove_case_5(delete_ptr);
+    }
+    else if(delete_ptr->m_color == BLACK && 
      delete_ptr->m_parent &&
      delete_ptr->m_parent->m_color == BLACK &&
      delete_ptr->m_parent->m_left == delete_ptr &&
      delete_ptr->m_parent->m_right && 
-     delete_ptr->m_parent->m_right->m_color == BLACK) {    
+     delete_ptr->m_parent->m_right->m_color == BLACK && 
+     ((delete_ptr->m_parent->m_right->m_left == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_left && 
+     delete_ptr->m_parent->m_right->m_left->m_color == BLACK)) &&
+     ((delete_ptr->m_parent->m_right->m_right == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_right && 
+     delete_ptr->m_parent->m_right->m_right->m_color == BLACK))) {
         remove_case_6(delete_ptr);
+    }
+    else if(delete_ptr->m_color == BLACK && 
+     delete_ptr->m_parent &&
+     delete_ptr->m_parent->m_color == BLACK &&
+     delete_ptr->m_parent->m_right == delete_ptr &&
+     delete_ptr->m_parent->m_left && 
+     delete_ptr->m_parent->m_left->m_color == BLACK && 
+     (!delete_ptr->m_parent->m_left->m_left ||
+     delete_ptr->m_parent->m_left->m_left && 
+     delete_ptr->m_parent->m_left->m_left->m_color == BLACK) &&
+     (!delete_ptr->m_parent->m_left->m_right ||
+     delete_ptr->m_parent->m_left->m_right && 
+     delete_ptr->m_parent->m_left->m_right->m_color == BLACK)) {
+        remove_case_7(delete_ptr);
     }
 }
 
