@@ -4,13 +4,22 @@
 
 int main() {
   mylib::rb_tree<int> rb;
-  for(int i = 37; i > 20; i-=3) {
-      rb.insert(i);
-  }
+  rb.insert(7);
+  rb.insert(4);
+  rb.insert(2);
+  rb.insert(71);
+  rb.insert(30);
+  rb.insert(34);
+  rb.insert(35);
+  rb.insert(72);
+  
+
+
+
   
     rb.print_in_order();
 std::cout << "\n\n";
-  rb.remove(22);
+  // rb.remove(7);
   rb.print_in_order();
 
 

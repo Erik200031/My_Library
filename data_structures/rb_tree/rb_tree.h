@@ -2,6 +2,7 @@
 #define RB_TREE_H
 
 #include <iostream>
+#include <iterator>
 
 #define BLACK 0
 #define RED 1
@@ -14,7 +15,6 @@ namespace mylib
     public:
         typedef T value_type;
         typedef T& reference;
-
     private:
         struct node
         {
@@ -33,6 +33,48 @@ namespace mylib
             bool m_color;
             value_type m_value;
         };
+    public:
+        class Iterator : std::iterator<std::bidirectional_iterator_tag, T>
+        {
+        public:
+            Iterator() : m_node{} {}    
+            Iterator(node* ptr) : m_node {ptr} {}
+            Iterator& operator=(const Iterator& rhs) : m_node {rhs.m_node} {}
+           // Iterator& operator=(Iterator&& rhs) : m_node {}
+            Iterator& operator++() {
+                if(m_node->m_parent == nullptr) {
+                    m_node = m_node->m_right;
+                }
+                else if(m_node->m_parent && 
+                m_node->m_value < m_node->m_parent->m_value) {
+                    m_node = m_node->m_parent;
+                } else if(m_node->m_parent && 
+                m_node->m_value > m_node->m_parent->m_value &&
+                m_node->m_parent->m_parent) {
+                    m_node = m_node->m_parent->m_parent;
+                }
+            }
+            Iterator operator++(int) {
+                if(m_node->m_parent == nullptr) {
+                    m_node = m_node->m_left;
+                }
+                else if(m_node->m_parent && 
+                m_node->m_value < m_node->m_parent->m_value) {
+                    m_node = m_node->m_parent;
+                } else if(m_node->m_parent && 
+                m_node->m_value > m_node->m_parent->m_value &&
+                m_node->m_parent->m_parent) {
+                    m_node = m_node->m_parent->m_parent;
+                }
+            }
+            Iterator& operator--() {
+                if()
+            }
+        public:
+
+        private:
+            node* m_node;
+        };
 
     public:
         rb_tree();
@@ -45,6 +87,7 @@ namespace mylib
         void remove(const value_type& value);
         bool empty() const;
         void print_in_order();
+        Iterator begin();
     private:
         void m_print_in_order(node* root);
         void balance(node* current);
