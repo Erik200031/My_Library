@@ -39,39 +39,15 @@ namespace mylib
         public:
             Iterator() : m_node{} {}    
             Iterator(node* ptr) : m_node {ptr} {}
-            Iterator& operator=(const Iterator& rhs) : m_node {rhs.m_node} {}
-           // Iterator& operator=(Iterator&& rhs) : m_node {}
-            Iterator& operator++() {
-                if(m_node->m_parent == nullptr) {
-                    m_node = m_node->m_right;
-                }
-                else if(m_node->m_parent && 
-                m_node->m_value < m_node->m_parent->m_value) {
-                    m_node = m_node->m_parent;
-                } else if(m_node->m_parent && 
-                m_node->m_value > m_node->m_parent->m_value &&
-                m_node->m_parent->m_parent) {
-                    m_node = m_node->m_parent->m_parent;
-                }
-            }
-            Iterator operator++(int) {
-                if(m_node->m_parent == nullptr) {
-                    m_node = m_node->m_left;
-                }
-                else if(m_node->m_parent && 
-                m_node->m_value < m_node->m_parent->m_value) {
-                    m_node = m_node->m_parent;
-                } else if(m_node->m_parent && 
-                m_node->m_value > m_node->m_parent->m_value &&
-                m_node->m_parent->m_parent) {
-                    m_node = m_node->m_parent->m_parent;
-                }
-            }
-            Iterator& operator--() {
-                if()
-            }
-        public:
-
+            Iterator(const Iterator& rhs) : m_node {rhs.m_node} {}
+            Iterator(Iterator&& rhs) noexcept : m_node {rhs.m_node} {}
+            Iterator& operator=(const Iterator& rhs) = default;
+            Iterator& operator=(Iterator&& rhs) noexcept = default;
+            Iterator& operator++();
+            Iterator operator++(int);
+            Iterator& operator--();
+            Iterator operator--(int);
+            T& operator*(){return m_node->m_value;}
         private:
             node* m_node;
         };

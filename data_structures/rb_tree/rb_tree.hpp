@@ -681,3 +681,84 @@ typename mylib::rb_tree<T>::node* mylib::rb_tree<T>::search(const value_type& va
     }
     return nullptr;
 }
+
+template <typename T>
+typename mylib::rb_tree<T>::Iterator mylib::rb_tree<T>::begin()
+{
+    node* tmp = m_root;
+    while (tmp->m_left)
+    {
+        tmp = tmp->m_left;
+    }
+    return Iterator(tmp);
+}
+
+
+template <typename T>
+typename mylib::rb_tree<T>::Iterator& mylib::rb_tree<T>::Iterator::operator++()
+{
+    if(m_node->m_right && m_node->m_right->m_left == nullptr) {
+        m_node = m_node->m_right;
+    } else if(m_node->m_right == nullptr && m_node->m_parent) {
+        while (m_node->m_parent && 
+        m_node->m_parent->m_value < m_node->m_value)
+        {   
+            m_node = m_node->m_parent;
+        }
+        if (m_node->m_parent)
+        {
+            m_node = m_node->m_parent;
+        }
+    }
+    else if(m_node->m_right && m_node->m_right->m_left) {
+        m_node = m_node->m_right->m_left;
+        while (m_node->m_left)
+        {
+            m_node = m_node->m_left;
+        }
+        
+    }
+    return *this;
+}
+
+template <typename T>
+typename mylib::rb_tree<T>::Iterator mylib::rb_tree<T>::Iterator::operator++(int)
+{
+    Iterator tmp = *this;
+    ++(*this);
+    return tmp; 
+}
+
+template <typename T>
+typename mylib::rb_tree<T>::Iterator& mylib::rb_tree<T>::Iterator::operator--()
+{
+    if(m_node->m_left && m_node->m_left->m_right == nullptr) {
+        m_node = m_node->m_left;
+    } else if(m_node->m_left == nullptr && m_node->m_parent) {
+        while (m_node->m_parent && 
+        m_node->m_parent->m_value > m_node->m_value)
+        {   
+            m_node = m_node->m_parent;
+        }
+        if (m_node->m_parent)
+        {
+            m_node = m_node->m_parent;
+        }
+    }
+    else if(m_node->m_left && m_node->m_left->m_right) {
+        m_node = m_node->m_left->m_right;
+        while (m_node->m_left)
+        {
+            m_node = m_node->m_left;
+        }
+    }
+    return *this;
+}
+
+template <typename T>
+typename mylib::rb_tree<T>::Iterator mylib::rb_tree<T>::Iterator::operator--(int)
+{
+    Iterator tmp = *this;
+    --(*this);
+    return tmp; 
+}

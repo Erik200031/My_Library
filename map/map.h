@@ -2,7 +2,6 @@
 #define MAP_H
 
 #include <functional>
-#include <utility>
 
 #include "../data_structures/rb_tree/rb_tree.h"
 
@@ -17,8 +16,7 @@ namespace mylib
         map() = default;
         ~map() = default;
         void insert(const Key& key, const T& value) { 
-            m_tree.insert(std::make_pair(key, value));
-            m_tree.print_in_order();
+            
         }
 
 

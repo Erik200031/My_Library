@@ -18,9 +18,28 @@ int main() {
 
   
     rb.print_in_order();
-std::cout << "\n\n";
+  std::cout << "\n\n";
   // rb.remove(7);
   rb.print_in_order();
+    std::cout << "\n\n";
+auto it = rb.begin();
+++it;
+++it;
+++it;
+++it;
+++it;
+++it;
+++it;
+--it;
+--it;
+--it;
+--it;
+--it;
+--it;
+--it;
+
+
+  std::cout << *it;
 
 
 }
