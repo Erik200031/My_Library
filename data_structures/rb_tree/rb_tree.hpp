@@ -121,7 +121,7 @@ void mylib::rb_tree<T>::balance(node* current)
             
         } 
         if(current->m_parent &&
-         current->m_parent->m_color == BLACK &&
+         current->m_parent->m_color == RED &&
          current->m_parent->m_parent && 
          current->m_parent->m_parent != m_root &&
          current->m_parent->m_parent->m_color == RED) {
@@ -336,20 +336,20 @@ void mylib::rb_tree<T>::remove(const value_type& value)
      delete_ptr->m_parent->m_left->m_right->m_color == BLACK))) {
         remove_case_9(delete_ptr);
     }
-    // else if(delete_ptr->m_color == BLACK && 
-    //  delete_ptr->m_parent &&
-    //  delete_ptr->m_parent->m_color == BLACK &&
-    //  delete_ptr->m_parent->m_left == delete_ptr &&
-    //  delete_ptr->m_parent->m_right && 
-    //  delete_ptr->m_parent->m_right->m_color == RED && 
-    //  ((delete_ptr->m_parent->m_right->m_left == nullptr) ||
-    //  (delete_ptr->m_parent->m_right->m_left && 
-    //  delete_ptr->m_parent->m_right->m_left->m_color == BLACK)) &&
-    //  ((delete_ptr->m_parent->m_right->m_right == nullptr) ||
-    //  (delete_ptr->m_parent->m_right->m_right && 
-    //  delete_ptr->m_parent->m_right->m_right->m_color == BLACK))) {
-    //     remove_case_10(delete_ptr);
-    // }
+    else if(delete_ptr->m_color == BLACK && 
+     delete_ptr->m_parent &&
+     delete_ptr->m_parent->m_color == BLACK &&
+     delete_ptr->m_parent->m_left == delete_ptr &&
+     delete_ptr->m_parent->m_right && 
+     delete_ptr->m_parent->m_right->m_color == RED && 
+     ((delete_ptr->m_parent->m_right->m_left == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_left && 
+     delete_ptr->m_parent->m_right->m_left->m_color == BLACK)) &&
+     ((delete_ptr->m_parent->m_right->m_right == nullptr) ||
+     (delete_ptr->m_parent->m_right->m_right && 
+     delete_ptr->m_parent->m_right->m_right->m_color == BLACK))) {
+     //   remove_case_7(delete_ptr);
+    }
 }
 
 template <typename T>
@@ -509,7 +509,7 @@ void mylib::rb_tree<T>::remove_case_6(node* current)
             bool tmp = current_parent->m_parent->m_color;
             current_parent->m_parent->m_color = current_parent->m_parent->m_right->m_color;
             current_parent->m_parent->m_right->m_color = tmp;
-            left_rotate(current_parent->m_parent->m_right->m_color);
+            left_rotate(current_parent->m_parent->m_right);
             current_parent->m_parent->m_parent->m_right->m_color = BLACK;
         }
         if(current_parent->m_parent != m_root) {
@@ -592,7 +592,7 @@ void mylib::rb_tree<T>::remove_case_7(node* current)
             bool tmp = current_parent->m_parent->m_color;
             current_parent->m_parent->m_color = current_parent->m_parent->m_right->m_color;
             current_parent->m_parent->m_right->m_color = tmp;
-            left_rotate(current_parent->m_parent->m_right->m_color);
+            left_rotate(current_parent->m_parent->m_right);
             current_parent->m_parent->m_parent->m_right->m_color = BLACK;
         }
         if(current_parent->m_parent->m_left &&
@@ -604,7 +604,7 @@ void mylib::rb_tree<T>::remove_case_7(node* current)
             bool tmp = current_parent->m_parent->m_color;
             current_parent->m_parent->m_color = current_parent->m_parent->m_left->m_color;
             current_parent->m_parent->m_left->m_color = tmp;
-            right_rotate(current_parent->m_parent->m_left->m_color);
+            right_rotate(current_parent->m_parent->m_left);
             current_parent->m_parent->m_parent->m_left->m_color = BLACK;
         }
         if(current_parent->m_parent != m_root) {
@@ -636,7 +636,7 @@ void mylib::rb_tree<T>::remove_case_7(node* current)
             bool tmp = current_parent->m_parent->m_color;
             current_parent->m_parent->m_color = current_parent->m_parent->m_right->m_color;
             current_parent->m_parent->m_right->m_color = tmp;
-            left_rotate(current_parent->m_parent->m_right->m_color);
+            left_rotate(current_parent->m_parent->m_right);
             current_parent->m_parent->m_parent->m_right->m_color = BLACK;
         }
         if(current_parent->m_parent->m_left &&
@@ -645,7 +645,7 @@ void mylib::rb_tree<T>::remove_case_7(node* current)
             bool tmp = current_parent->m_parent->m_color;
             current_parent->m_parent->m_color = current_parent->m_parent->m_left->m_color;
             current_parent->m_parent->m_left->m_color = tmp;
-            right_rotate(current_parent->m_parent->m_left->m_color);
+            right_rotate(current_parent->m_parent->m_left);
             current_parent->m_parent->m_parent->m_left->m_color = BLACK;
         }
         if(current_parent->m_parent != m_root) {
@@ -670,12 +670,6 @@ void mylib::rb_tree<T>::remove_case_9(node* current)
    current->m_parent->m_left->m_color = BLACK;
    right_rotate(current->m_parent);
    remove_case_3(current);
-}
-
-template <typename T>
-void mylib::rb_tree<T>::remove_case_10(node* current)
-{
-   
 }
 
 template <typename T>
