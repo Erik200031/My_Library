@@ -1,8 +1,7 @@
 #ifndef UTILITY_H_
 #define UTILITY_H_
 
-#include <tuple>
-#include <utility>
+#include "../tuple/tuple.h"
 
 namespace mylib
 {
@@ -31,17 +30,20 @@ namespace mylib
         pair(pair<T1, T2>&& rhs);
         template <typename U1, typename U2>
         pair(const pair<U1, U2>& rhs);
-        template <typename... Args1, typename... Args2>
-        constexpr pair(std::piecewise_construct_t,
-            std::tuple<Args1...> first_args, std::tuple<Args2...> second_args);
-
+        template <typename U1, typename U2>
+        constexpr pair(mylib::tuple<U1, U2>&& rhs);
+        // template <typename... Args1, typename... Args2>
+        // constexpr pair(std::piecewise_construct_t,
+        //     std::tuple<Args1...> first_args, std::tuple<Args2...> second_args);
+        bool operator<(const pair& rhs) {
+            return this->first < rhs.first;
+        }
+    public:
 
         T1 first;
         T2 second;
     };
     
-
-
 } // namespace mylib
 
 template <typename T1, typename T2>
@@ -66,21 +68,10 @@ template <typename U1, typename U2>
 mylib::pair<T1, T2>::pair(const mylib::pair<U1, U2>& rhs) :
 first (rhs.first), second (rhs.second) {} //()-> enabled narrowing convert
 
-constexpr mylib::pair<T1, T2>::pair(std::tuple&& rhs) :
-        : first(_VSTD::get<0>(_VSTD::forward<_Tuple>(__p))),
-          second(_VSTD::get<1>(_VSTD::forward<_Tuple>(__p))) {}
-
 template <typename T1, typename T2>
-template <typename... Args1, typename... Args2>
-constexpr mylib::pair<T1, T2>::pair(std::piecewise_construct_t, 
-std::tuple<Args1...> first_args, std::tuple<Args2...> second_args)
-        : pair(std::piecewise_construct, first_args, second_args,
-                typename std::__make_tuple_indices<sizeof...(Args1)>::type(),
-                typename std::__make_tuple_indices<sizeof...(Args2) >::type())
-{
-
-    // std::cout << "2";
-}
-
+template <typename U1, typename U2>
+constexpr mylib::pair<T1, T2>::pair(mylib::tuple<U1, U2>&& rhs) 
+        : first(mylib::get<0>(std::forward<U1>(rhs))),
+          second(mylib::get<1>(std::forward<U2>(rhs))) {}
 
 #endif //UTILITY_H_
