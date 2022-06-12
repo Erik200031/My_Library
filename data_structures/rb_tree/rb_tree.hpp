@@ -70,6 +70,7 @@ void mylib::rb_tree<T>::balance(node* current)
         if(current->m_parent->m_parent && 
          (current->m_parent->m_right == current) &&
          (current->m_parent->m_parent->m_left == nullptr || 
+         current->m_parent->m_parent->m_left &&
          current->m_parent->m_parent->m_left->m_color == BLACK)) {
             if(current->m_parent->m_parent)
                 current->m_parent->m_color = BLACK;
@@ -118,16 +119,17 @@ void mylib::rb_tree<T>::balance(node* current)
             if(current->m_parent->m_parent != m_root) {
                 current->m_parent->m_parent->m_color = RED;
             }
-            
         } 
         if(current->m_parent &&
-         current->m_parent->m_color == RED &&
          current->m_parent->m_parent && 
          current->m_parent->m_parent != m_root &&
-         current->m_parent->m_parent->m_color == RED) {
+         current->m_parent->m_parent->m_color == RED && 
+         current->m_parent->m_parent->m_parent &&
+         current->m_parent->m_parent->m_parent->m_color == RED) {
+            m_root->m_color = BLACK;
             balance(current->m_parent->m_parent);
         }
-    }
+    } 
     m_root->m_color = BLACK;
 }
 
@@ -149,6 +151,7 @@ void mylib::rb_tree<T>::left_rotate(node* current)
         }
     } else {
         m_root = cur_right;
+        cur_right->m_parent = nullptr;
     }
     cur_right->m_left = current;
     current->m_parent = cur_right;
@@ -692,7 +695,6 @@ typename mylib::rb_tree<T>::Iterator mylib::rb_tree<T>::begin()
     }
     return Iterator(tmp);
 }
-
 
 template <typename T>
 typename mylib::rb_tree<T>::Iterator& mylib::rb_tree<T>::Iterator::operator++()
