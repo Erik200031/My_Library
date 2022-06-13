@@ -53,6 +53,12 @@ namespace mylib
             Iterator& operator--();
             Iterator operator--(int);
             value_type& operator*() {return m_node->m_value;}
+            friend bool operator==(const Iterator& first, const Iterator& second) {
+                return first.m_node == second.m_node;
+            } 
+            friend bool operator!=(const Iterator& first, const Iterator& second) {
+                return first.m_node != second.m_node;
+            }
         private:
             node* m_node;
         };
@@ -64,11 +70,13 @@ namespace mylib
         rb_tree& operator=(const rb_tree& rhs);
         rb_tree& operator=(rb_tree&& rhs) noexcept;
         void insert(const value_type& value);
-        node* search(const value_type& value);
-        void remove(const value_type& value);
+        node* search(const Key& value);
+        void remove(const Key& value);
+        void clear();
         bool empty() const;
         void print_in_order();
         Iterator begin();
+        Iterator end();
     private:
         void m_print_in_order(node* root);
         void balance(node* current);
