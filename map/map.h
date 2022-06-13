@@ -4,6 +4,8 @@
 #include <functional>
 #include <initializer_list>
 #include <cstddef>
+#include <exception>
+#include <stdexcept>
 
 #include "../utility/utility.h"
 #include "../data_structures/rb_tree/rb_tree.h"
@@ -17,13 +19,37 @@ namespace mylib
     public:
         typedef Key key_type;
         typedef T mapped_type;
-        typedef mylib::pair<const Key, T> value_type;
+        typedef mylib::pair<Key, T> value_type;
         typedef size_t size_type;
         typedef std::ptrdiff_t difference_type;
         typedef Compare key_compare;
         typedef value_type& reference;
         typedef const value_type& const_reference;
 
+        class Iterator
+        {
+        public:
+            Iterator() : m_itr{} {}    
+            Iterator(typename mylib::rb_tree<Key, T, Compare>::Iterator in_itr)
+             : m_itr{in_itr} {}
+            Iterator(const Iterator& rhs) : m_itr {rhs.m_itr} {}
+            Iterator(Iterator&& rhs) noexcept : m_itr {rhs.m_itr} {}
+            Iterator& operator=(const Iterator& rhs) = default;
+            Iterator& operator=(Iterator&& rhs) noexcept = default;
+            Iterator& operator++() {++m_itr; return *this;}
+            Iterator operator++(int) {m_itr++;}
+            Iterator& operator--() {--m_itr;}
+            Iterator operator--(int) {m_itr--;}
+            value_type& operator*() {return *m_itr;}
+            friend bool operator==(const Iterator& first, const Iterator& second) {
+                return first.m_itr == second.m_itr;
+            } 
+            friend bool operator!=(const Iterator& first, const Iterator& second) {
+                return first.m_itr != second.m_itr;
+            }
+        private:
+            typename mylib::rb_tree<Key, T, Compare>::Iterator m_itr;
+        };
         map() = default;
         // explicit map(const Compare& comp);
         // template< class InputIt >
@@ -39,13 +65,14 @@ namespace mylib
         // map& operator=(std::initializer_list<value_type> ilist);
 
         // T& at(const Key& key);
-        // const T& at(const Key& key) const;
-        // T& operator[](const Key& key);	
-        // T& operator[](Key&& key);
-        // iterator begin() noexcept;
+        const T& at(const Key& key) const;
+        T& operator[](const Key& key);	
+        T& operator[](Key&& key);
+        Iterator begin() noexcept;
+        void print();
         // const_iterator begin() const noexcept;
         // const_iterator cbegin() const noexcept;
-        // iterator end() noexcept;
+        Iterator end() noexcept;
         // const_iterator end() const noexcept;
         // const_iterator cend() const noexcept;
         // reverse_iterator rbegin() noexcept;
@@ -55,11 +82,12 @@ namespace mylib
         // const_reverse_iterator rend() const noexcept;
         // const_reverse_iterator crend() const noexcept;
 
-        // [[nodiscard]] bool empty() const noexcept;
+        [[nodiscard]] bool empty() const noexcept;
         // size_type size() const noexcept;
         // void clear() noexcept;
         
-        mylib::pair<iterator, bool> insert(const value_type& value);
+        //mylib::pair<Iterator, bool> 
+        void insert(const value_type& value);
         // std::pair<iterator, bool> insert(value_type&& value);
         // iterator insert(const_iterator hint, const value_type& value);
         // iterator insert(const_iterator hint, value_type&& value);
@@ -111,7 +139,7 @@ namespace mylib
         //                 const std::map<Key,T,Compare>& rhs);
 
     private:
-        mylib::rb_tree<std::pair<Key, T>> m_tree;
+        mylib::rb_tree<Key, T> m_tree;
     };
 
 

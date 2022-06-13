@@ -1,23 +1,23 @@
-template <typename Key, typename T>
-mylib::rb_tree<Key, T>::rb_tree() : m_root{} {}
+template <typename Key, typename T, typename Compare>    
+mylib::rb_tree<Key, T, Compare>::rb_tree() : m_root{} {}
 
-template <typename Key, typename T>
-mylib::rb_tree<Key, T>::rb_tree(const rb_tree<Key, T>& rhs) : m_root{} 
+template <typename Key, typename T, typename Compare>    
+mylib::rb_tree<Key, T, Compare>::rb_tree(const rb_tree<Key, T, Compare>& rhs) : m_root{} 
 {
     for(auto it = rhs.begin(); it != rhs.end(); ++it) {
         insert(*it);
     }
 }
 
-template <typename Key, typename T>
-mylib::rb_tree<Key, T>::rb_tree(rb_tree<Key, T>&& rhs) noexcept : m_root{} 
+template <typename Key, typename T, typename Compare>    
+mylib::rb_tree<Key, T, Compare>::rb_tree(rb_tree<Key, T, Compare>&& rhs) noexcept : m_root{} 
 {
     m_root = rhs.m_root;
     rhs.m_root = nullptr;
 }
 
-template <typename Key, typename T>
-mylib::rb_tree<Key, T>& mylib::rb_tree<Key, T>::operator=(const rb_tree<Key, T>& rhs) 
+template <typename Key, typename T, typename Compare>    
+mylib::rb_tree<Key, T, Compare>& mylib::rb_tree<Key, T, Compare>::operator=(const rb_tree<Key, T, Compare>& rhs) 
 {
     if(!empty()) {
         clear();
@@ -27,8 +27,8 @@ mylib::rb_tree<Key, T>& mylib::rb_tree<Key, T>::operator=(const rb_tree<Key, T>&
     }
 }
 
-template <typename Key, typename T>
-mylib::rb_tree<Key, T>& mylib::rb_tree<Key, T>::operator=(rb_tree<Key, T>&& rhs) noexcept
+template <typename Key, typename T, typename Compare>    
+mylib::rb_tree<Key, T, Compare>& mylib::rb_tree<Key, T, Compare>::operator=(rb_tree<Key, T, Compare>&& rhs) noexcept
 {
     if(!empty()) {
         clear();
@@ -37,14 +37,14 @@ mylib::rb_tree<Key, T>& mylib::rb_tree<Key, T>::operator=(rb_tree<Key, T>&& rhs)
     rhs.m_root = nullptr;
 }
 
-template <typename Key, typename T>
-bool mylib::rb_tree<Key, T>::empty() const
+template <typename Key, typename T, typename Compare>    
+bool mylib::rb_tree<Key, T, Compare>::empty() const
 {
     return m_root == nullptr;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::insert(const value_type& value)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::insert(const value_type& value)
 {
     node* current_parent = nullptr;
     if(empty()) {
@@ -73,8 +73,8 @@ void mylib::rb_tree<Key, T>::insert(const value_type& value)
     balance(current);
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::balance(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::balance(node* current)
 {
     if(current->m_parent && current->m_parent->m_color == RED) {
         if(current->m_parent->m_parent && 
@@ -143,8 +143,8 @@ void mylib::rb_tree<Key, T>::balance(node* current)
     m_root->m_color = BLACK;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::left_rotate(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::left_rotate(node* current)
 {
     node* cur_right = current->m_right;
     node* w_node {};
@@ -168,8 +168,8 @@ void mylib::rb_tree<Key, T>::left_rotate(node* current)
     current->m_right = w_node;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::right_rotate(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::right_rotate(node* current)
 {
     node* cur_left = current->m_left;
     node* w_node {};
@@ -192,8 +192,8 @@ void mylib::rb_tree<Key, T>::right_rotate(node* current)
     current->m_left = w_node;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::m_print_in_order(node* root) 
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::m_print_in_order(node* root) 
 {
     if(!root) {
         return;
@@ -204,14 +204,14 @@ void mylib::rb_tree<Key, T>::m_print_in_order(node* root)
     m_print_in_order(root->m_right);
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::print_in_order() 
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::print_in_order() 
 {
     m_print_in_order(m_root);
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove(const Key& value)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove(const Key& value)
 {
     node* current = search(value);
     node* delete_ptr;
@@ -348,8 +348,8 @@ void mylib::rb_tree<Key, T>::remove(const Key& value)
     }
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::node* mylib::rb_tree<Key, T>::search_in_order_successor(node* current)
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::node* mylib::rb_tree<Key, T, Compare>::search_in_order_successor(node* current)
 {
     while(current->m_left) {
         current = current->m_left;
@@ -357,8 +357,8 @@ typename mylib::rb_tree<Key, T>::node* mylib::rb_tree<Key, T>::search_in_order_s
     return current;
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::node* mylib::rb_tree<Key, T>::search_in_order_predecessor(node* current)
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::node* mylib::rb_tree<Key, T, Compare>::search_in_order_predecessor(node* current)
 {
     while(current->m_right) {
         current = current->m_right;
@@ -366,8 +366,8 @@ typename mylib::rb_tree<Key, T>::node* mylib::rb_tree<Key, T>::search_in_order_p
     return current;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_1(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_1(node* current)
 {
     node* current_parent = current->m_parent;
     if(current->m_parent && current_parent->m_left == current) {
@@ -382,8 +382,8 @@ void mylib::rb_tree<Key, T>::remove_case_1(node* current)
     current = nullptr;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_2(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_2(node* current)
 {
     if(((current->m_parent->m_right && 
     current->m_parent->m_right->m_left &&
@@ -406,8 +406,8 @@ void mylib::rb_tree<Key, T>::remove_case_2(node* current)
     delete current;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_3(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_3(node* current)
 {
     if((current->m_parent->m_left && 
     current->m_parent->m_left->m_left &&
@@ -431,8 +431,8 @@ void mylib::rb_tree<Key, T>::remove_case_3(node* current)
     current = nullptr;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_4(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_4(node* current)
 {
     current->m_parent->m_color = BLACK;
     current->m_parent->m_right->m_color = RED;
@@ -440,8 +440,8 @@ void mylib::rb_tree<Key, T>::remove_case_4(node* current)
     delete current;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_5(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_5(node* current)
 {
     current->m_parent->m_left->m_color = RED;
     current->m_parent->m_color = BLACK;
@@ -449,8 +449,8 @@ void mylib::rb_tree<Key, T>::remove_case_5(node* current)
     delete current;
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_6(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_6(node* current)
 {
     current->m_parent->m_right->m_color = RED;
     node* current_parent = current->m_parent;
@@ -530,8 +530,8 @@ void mylib::rb_tree<Key, T>::remove_case_6(node* current)
     }
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_7(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_7(node* current)
 {
     current->m_parent->m_left->m_color = RED;
     node* current_parent = current->m_parent;
@@ -663,41 +663,42 @@ void mylib::rb_tree<Key, T>::remove_case_7(node* current)
     }
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_8(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_8(node* current)
 {
    current->m_parent->m_color = RED;
    current->m_parent->m_right->m_color = BLACK;
    remove_case_2(current);
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::remove_case_9(node* current)
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::remove_case_9(node* current)
 {
    current->m_parent->m_color = RED;
    current->m_parent->m_left->m_color = BLACK;
    remove_case_3(current);
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::node* 
-mylib::rb_tree<Key, T>::search(const Key& value)
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator 
+mylib::rb_tree<Key, T, Compare>::search(const Key& value) const
 {
     node* current = m_root;
     while (current != nullptr) {
         if(current->m_value.first < value) {
             current = current->m_right;
         } else if(current->m_value.first == value) {
-            return current;
+            Iterator cur = current;
+            return cur;
         } else {
             current = current->m_left;
         }
     }
-    return nullptr;
+    return end();
 }
 
-template <typename Key, typename T>
-void mylib::rb_tree<Key, T>::clear()
+template <typename Key, typename T, typename Compare>    
+void mylib::rb_tree<Key, T, Compare>::clear()
 {
     if(m_root == nullptr) {
         return;
@@ -707,8 +708,9 @@ void mylib::rb_tree<Key, T>::clear()
     }
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::Iterator mylib::rb_tree<Key, T>::begin()
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator 
+mylib::rb_tree<Key, T, Compare>::begin()
 {
     node* tmp = m_root;
     while (tmp->m_left)
@@ -718,8 +720,9 @@ typename mylib::rb_tree<Key, T>::Iterator mylib::rb_tree<Key, T>::begin()
     return Iterator(tmp);
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::Iterator mylib::rb_tree<Key, T>::end()
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator 
+mylib::rb_tree<Key, T, Compare>::end()
 {
     node* tmp = m_root;
     while (tmp->m_right)
@@ -730,8 +733,9 @@ typename mylib::rb_tree<Key, T>::Iterator mylib::rb_tree<Key, T>::end()
     return Iterator(tmp);
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::Iterator& mylib::rb_tree<Key, T>::Iterator::operator++()
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator& 
+mylib::rb_tree<Key, T, Compare>::Iterator::operator++()
 {
     if(m_node->m_right && m_node->m_right->m_left == nullptr) {
         m_node = m_node->m_right;
@@ -761,16 +765,18 @@ typename mylib::rb_tree<Key, T>::Iterator& mylib::rb_tree<Key, T>::Iterator::ope
     return *this;
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::Iterator mylib::rb_tree<Key, T>::Iterator::operator++(int)
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator 
+mylib::rb_tree<Key, T, Compare>::Iterator::operator++(int)
 {
     Iterator tmp = *this;
     ++(*this);
     return tmp; 
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::Iterator& mylib::rb_tree<Key, T>::Iterator::operator--()
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator& 
+mylib::rb_tree<Key, T, Compare>::Iterator::operator--()
 {
     if(m_node->m_left && m_node->m_left->m_right == nullptr) {
         m_node = m_node->m_left;
@@ -795,8 +801,107 @@ typename mylib::rb_tree<Key, T>::Iterator& mylib::rb_tree<Key, T>::Iterator::ope
     return *this;
 }
 
-template <typename Key, typename T>
-typename mylib::rb_tree<Key, T>::Iterator mylib::rb_tree<Key, T>::Iterator::operator--(int)
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator 
+mylib::rb_tree<Key, T, Compare>::Iterator::operator--(int)
+{
+    Iterator tmp = *this;
+    --(*this);
+    return tmp; 
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Const_Iterator 
+mylib::rb_tree<Key, T, Compare>::cbegin() const noexcept
+{
+    node* tmp = m_root;
+    while (tmp->m_left)
+    {
+        tmp = tmp->m_left;
+    }
+    return Iterator(tmp);
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Const_Iterator 
+mylib::rb_tree<Key, T, Compare>::cend() const noexcept
+{
+    node* tmp = m_root;
+    while (tmp->m_right)
+    {
+        tmp = tmp->m_right;
+    }
+    tmp = tmp->m_right;
+    return Iterator(tmp);
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator& mylib::rb_tree<Key, T, Compare>::Iterator::operator++()
+{
+    if(m_node->m_right && m_node->m_right->m_left == nullptr) {
+        m_node = m_node->m_right;
+    } else if(m_node->m_right == nullptr &&
+     m_node->m_parent) {
+        node* tmp = m_node;
+        while (m_node->m_parent && 
+        m_node->m_parent->m_value < m_node->m_value)
+        {   
+            m_node = m_node->m_parent;
+        }
+        if (m_node->m_parent &&
+         m_node->m_parent->m_value.first > m_node->m_value.first)
+        {
+            m_node = m_node->m_parent;
+        } else {
+            m_node = tmp->m_right;
+        }
+    }
+    else if(m_node->m_right && m_node->m_right->m_left) {
+        m_node = m_node->m_right->m_left;
+        while (m_node->m_left)
+        {
+            m_node = m_node->m_left;
+        }   
+    } 
+    return *this;
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator mylib::rb_tree<Key, T, Compare>::Iterator::operator++(int)
+{
+    Iterator tmp = *this;
+    ++(*this);
+    return tmp; 
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator& mylib::rb_tree<Key, T, Compare>::Iterator::operator--()
+{
+    if(m_node->m_left && m_node->m_left->m_right == nullptr) {
+        m_node = m_node->m_left;
+    } else if(m_node->m_left == nullptr && m_node->m_parent) {
+        while (m_node->m_parent && 
+        m_node->m_parent->m_value > m_node->m_value)
+        {   
+            m_node = m_node->m_parent;
+        }
+        if (m_node->m_parent)
+        {
+            m_node = m_node->m_parent;
+        }
+    }
+    else if(m_node->m_left && m_node->m_left->m_right) {
+        m_node = m_node->m_left->m_right;
+        while (m_node->m_left)
+        {
+            m_node = m_node->m_left;
+        }
+    }
+    return *this;
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::rb_tree<Key, T, Compare>::Iterator mylib::rb_tree<Key, T, Compare>::Iterator::operator--(int)
 {
     Iterator tmp = *this;
     --(*this);

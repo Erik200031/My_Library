@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <iterator>
+#include <functional>
 
 #include "../../utility/utility.h"
 
@@ -11,7 +12,7 @@
 
 namespace mylib
 {
-    template <typename Key, typename T>
+    template <typename Key, typename T, typename Compare = std::less<Key>>
     class rb_tree
     {
     public:
@@ -62,6 +63,29 @@ namespace mylib
         private:
             node* m_node;
         };
+        class Const_Iterator : std::iterator<std::bidirectional_iterator_tag, Key>
+        {
+        public:
+            Const_Iterator() : m_node{} {}    
+            Const_Iterator(node* ptr) : m_node {ptr} {}
+            Const_Iterator(const Const_Iterator& rhs) : m_node {rhs.m_node} {}
+            Const_Iterator(Const_Iterator&& rhs) noexcept : m_node {rhs.m_node} {}
+            Const_Iterator& operator=(const Const_Iterator& rhs) = default;
+            Const_Iterator& operator=(Const_Iterator&& rhs) noexcept = default;
+            Const_Iterator& operator++();
+            Const_Iterator operator++(int);
+            Const_Iterator& operator--();
+            Const_Iterator operator--(int);
+            const value_type& operator*() const {return m_node->m_value;}
+            friend bool operator==(const Iterator& first, const Iterator& second) {
+                return first.m_node == second.m_node;
+            } 
+            friend bool operator!=(const Iterator& first, const Iterator& second) {
+                return first.m_node != second.m_node;
+            }
+        private:
+            const node* m_node;
+        };
 
     public:
         rb_tree();
@@ -70,13 +94,15 @@ namespace mylib
         rb_tree& operator=(const rb_tree& rhs);
         rb_tree& operator=(rb_tree&& rhs) noexcept;
         void insert(const value_type& value);
-        node* search(const Key& value);
+        Iterator search(const Key& value) const;
         void remove(const Key& value);
         void clear();
         bool empty() const;
         void print_in_order();
         Iterator begin();
         Iterator end();
+        Const_Iterator cbegin() const noexcept;
+        Const_Iterator cend() const noexcept;
     private:
         void m_print_in_order(node* root);
         void balance(node* current);
