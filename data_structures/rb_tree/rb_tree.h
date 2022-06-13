@@ -4,17 +4,22 @@
 #include <iostream>
 #include <iterator>
 
+#include "../../utility/utility.h"
+
 #define BLACK 0
 #define RED 1
 
 namespace mylib
 {
-    template <typename T>
+    template <typename Key, typename T>
     class rb_tree
     {
     public:
-        typedef T value_type;
-        typedef T& reference;
+        typedef Key key_type;
+        typedef Key& key_type_reference;
+        typedef T mapped_type;
+        typedef mylib::pair<Key, T> value_type;
+        typedef value_type& reference;
     private:
         struct node
         {
@@ -34,7 +39,7 @@ namespace mylib
             value_type m_value;
         };
     public:
-        class Iterator : std::iterator<std::bidirectional_iterator_tag, T>
+        class Iterator : std::iterator<std::bidirectional_iterator_tag, Key>
         {
         public:
             Iterator() : m_node{} {}    
@@ -47,7 +52,7 @@ namespace mylib
             Iterator operator++(int);
             Iterator& operator--();
             Iterator operator--(int);
-            T& operator*(){return m_node->m_value;}
+            value_type& operator*() {return m_node->m_value;}
         private:
             node* m_node;
         };

@@ -39,11 +39,16 @@ namespace mylib
             return this->first < rhs.first;
         }
     public:
-
         T1 first;
         T2 second;
     };
     
+    template <typename T1, typename T2>
+    mylib::pair<T1, T2> make_pair(T1 in_first, T2 in_second)
+    {
+        return mylib::pair<T1, T2>(in_first, in_second);
+    }
+
 } // namespace mylib
 
 template <typename T1, typename T2>
