@@ -26,7 +26,9 @@ namespace mylib
         typedef value_type& reference;
         typedef const value_type& const_reference;
 
-        class Iterator
+        class Const_Iterator;
+
+        class Iterator : public std::iterator<std::bidirectional_iterator_tag, Key>
         {
         public:
             Iterator() : m_itr{} {}    
@@ -47,10 +49,47 @@ namespace mylib
             friend bool operator!=(const Iterator& first, const Iterator& second) {
                 return first.m_itr != second.m_itr;
             }
+            friend bool operator==(const Iterator& first, const Const_Iterator& second) {
+                return first.m_itr == second.m_itr;
+            } 
+            friend bool operator!=(const Iterator& first, const Const_Iterator& second) {
+                return first.m_itr != second.m_itr;
+            }
         private:
             typename mylib::rb_tree<Key, T, Compare>::Iterator m_itr;
         };
-        map() = default;
+        class Const_Iterator : public std::iterator<std::bidirectional_iterator_tag, Key>
+        {
+        public:
+            Const_Iterator() : m_itr{} {}    
+            Const_Iterator(typename mylib::rb_tree<Key, T, Compare>::Const_Iterator in_itr)
+             : m_itr{in_itr} {}
+            Const_Iterator(const Const_Iterator& rhs) : m_itr {rhs.m_itr} {}
+            Const_Iterator(Const_Iterator&& rhs) noexcept : m_itr {rhs.m_itr} {}
+            Const_Iterator& operator=(const Const_Iterator& rhs) = default;
+            Const_Iterator& operator=(Const_Iterator&& rhs) noexcept = default;
+            Const_Iterator& operator++() {++m_itr; return *this;}
+            Const_Iterator operator++(int) {m_itr++;}
+            Const_Iterator& operator--() {--m_itr;}
+            Const_Iterator operator--(int) {m_itr--;}
+            const value_type& operator*() const {return *m_itr;}
+            friend bool operator==(const Const_Iterator& first, const Const_Iterator& second) {
+                return first.m_itr == second.m_itr;
+            } 
+            friend bool operator!=(const Const_Iterator& first, const Const_Iterator& second) {
+                return first.m_itr != second.m_itr;
+            }
+            friend bool operator==(const Const_Iterator& first, const Iterator& second) {
+                return first.m_itr == second.m_itr;
+            } 
+            friend bool operator!=(const Const_Iterator& first, const Iterator& second) {
+                return first.m_itr != second.m_itr;
+            }
+        private:
+            typename mylib::rb_tree<Key, T, Compare>::Const_Iterator m_itr;
+        };
+
+        map() : m_tree{}, m_size{} {}
         // explicit map(const Compare& comp);
         // template< class InputIt >
         // map(InputIt first, InputIt last,
@@ -64,17 +103,17 @@ namespace mylib
         // map& operator=(map&& other) noexcept;
         // map& operator=(std::initializer_list<value_type> ilist);
 
-        // T& at(const Key& key);
+        T& at(const Key& key);
         const T& at(const Key& key) const;
         T& operator[](const Key& key);	
         T& operator[](Key&& key);
         Iterator begin() noexcept;
         void print();
         // const_iterator begin() const noexcept;
-        // const_iterator cbegin() const noexcept;
+        Const_Iterator cbegin() const noexcept;
         Iterator end() noexcept;
         // const_iterator end() const noexcept;
-        // const_iterator cend() const noexcept;
+        Const_Iterator cend() const noexcept;
         // reverse_iterator rbegin() noexcept;
         // const_reverse_iterator rbegin() const noexcept;
         // const_reverse_iterator crbegin() const noexcept;
@@ -83,8 +122,8 @@ namespace mylib
         // const_reverse_iterator crend() const noexcept;
 
         [[nodiscard]] bool empty() const noexcept;
-        // size_type size() const noexcept;
-        // void clear() noexcept;
+        size_type size() const noexcept;
+        void clear() noexcept;
         
         //mylib::pair<Iterator, bool> 
         void insert(const value_type& value);
@@ -114,7 +153,7 @@ namespace mylib
         // iterator try_emplace(const_iterator hint, const Key& k, Args&&... args);
         // template <class... Args>
         // iterator try_emplace(const_iterator hint, Key&& k, Args&&... args);
-        // iterator erase(iterator pos);
+        Iterator erase(Iterator pos);
         // iterator erase(const_iterator pos);
         // iterator erase(const_iterator first, const_iterator last);
         // size_type erase(const Key& key);
@@ -140,6 +179,7 @@ namespace mylib
 
     private:
         mylib::rb_tree<Key, T> m_tree;
+        size_type m_size;
     };
 
 

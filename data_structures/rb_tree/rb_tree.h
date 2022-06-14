@@ -21,6 +21,7 @@ namespace mylib
         typedef T mapped_type;
         typedef mylib::pair<Key, T> value_type;
         typedef value_type& reference;
+        typedef size_t size_type;
     private:
         struct node
         {
@@ -40,7 +41,7 @@ namespace mylib
             value_type m_value;
         };
     public:
-        class Iterator : std::iterator<std::bidirectional_iterator_tag, Key>
+        class Iterator : public std::iterator<std::bidirectional_iterator_tag, Key>
         {
         public:
             Iterator() : m_node{} {}    
@@ -54,6 +55,7 @@ namespace mylib
             Iterator& operator--();
             Iterator operator--(int);
             value_type& operator*() {return m_node->m_value;}
+            node* get() {return m_node;}
             friend bool operator==(const Iterator& first, const Iterator& second) {
                 return first.m_node == second.m_node;
             } 
@@ -63,7 +65,7 @@ namespace mylib
         private:
             node* m_node;
         };
-        class Const_Iterator : std::iterator<std::bidirectional_iterator_tag, Key>
+        class Const_Iterator : public std::iterator<std::bidirectional_iterator_tag, Key>
         {
         public:
             Const_Iterator() : m_node{} {}    
@@ -77,10 +79,10 @@ namespace mylib
             Const_Iterator& operator--();
             Const_Iterator operator--(int);
             const value_type& operator*() const {return m_node->m_value;}
-            friend bool operator==(const Iterator& first, const Iterator& second) {
+            friend bool operator==(const Const_Iterator& first, const Const_Iterator& second) {
                 return first.m_node == second.m_node;
             } 
-            friend bool operator!=(const Iterator& first, const Iterator& second) {
+            friend bool operator!=(const Const_Iterator& first, const Const_Iterator& second) {
                 return first.m_node != second.m_node;
             }
         private:
@@ -94,7 +96,8 @@ namespace mylib
         rb_tree& operator=(const rb_tree& rhs);
         rb_tree& operator=(rb_tree&& rhs) noexcept;
         void insert(const value_type& value);
-        Iterator search(const Key& value) const;
+        Const_Iterator search(const Key& value) const;
+        Iterator search(const Key& value);
         void remove(const Key& value);
         void clear();
         bool empty() const;

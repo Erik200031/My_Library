@@ -4,24 +4,41 @@ template <typename Key, typename T, typename Compare>
 void mylib::map<Key, T, Compare>::insert(const value_type& value)
 {
     m_tree.insert(value);
+    ++m_size;
 }
 
 template <typename Key, typename T, typename Compare>    
 mylib::map<Key, T, Compare>::~map()
 {
-   // m_tree.clear();
+    clear();
 }
 
 template <typename Key, typename T, typename Compare>    
-typename mylib::map<Key, T, Compare>::Iterator  mylib::map<Key, T, Compare>::begin() noexcept
+typename mylib::map<Key, T, Compare>::Iterator  
+ mylib::map<Key, T, Compare>::begin() noexcept
 {
     return  m_tree.begin();
 }
 
 template <typename Key, typename T, typename Compare>    
-typename mylib::map<Key, T, Compare>::Iterator  mylib::map<Key, T, Compare>::end() noexcept
+typename mylib::map<Key, T, Compare>::Iterator 
+ mylib::map<Key, T, Compare>::end() noexcept
 {
     return  m_tree.end();
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::map<Key, T, Compare>::Const_Iterator 
+ mylib::map<Key, T, Compare>::cbegin() const noexcept
+{
+    return  m_tree.cbegin();
+}
+
+template <typename Key, typename T, typename Compare>    
+typename mylib::map<Key, T, Compare>::Const_Iterator 
+ mylib::map<Key, T, Compare>::cend() const noexcept
+{
+    return  m_tree.cend();
 }
 
 template <typename Key, typename T, typename Compare>
@@ -58,29 +75,9 @@ T& mylib::map<Key, T, Compare>::operator[](Key&& key)
     return (*m_tree.search(key)).second;
 }	
 
-// template <typename Key, typename T, typename Compare>
-// T& mylib::map<Key, T, Compare>::at(const Key& key) 
-// {
-//     mylib::map<Key, T, Compare>::Iterator it;
-//     try
-// 	{
-//         it = m_tree.search(key);
-//         if(it == end()) {
-//             throw std::invalid_argument("Invalid argument!");
-//         }
-//     }
-// 	catch (const std::exception& ex)
-// 	{
-//         std::cerr << '\n' << ex.what() << '\n';
-//         exit(0);
-// 	}
-//     return (*it).second;
-// }
-
 template <typename Key, typename T, typename Compare>
-const T& mylib::map<Key, T, Compare>::at(const Key& key) const 
+T& mylib::map<Key, T, Compare>::at(const Key& key) 
 {
-    std::cout << "chishta";
     mylib::map<Key, T, Compare>::Iterator it;
     try
 	{
@@ -95,4 +92,46 @@ const T& mylib::map<Key, T, Compare>::at(const Key& key) const
         exit(0);
 	}
     return (*it).second;
+}
+
+template <typename Key, typename T, typename Compare>
+const T& mylib::map<Key, T, Compare>::at(const Key& key) const 
+{
+    mylib::map<Key, T, Compare>::Const_Iterator it;
+    try
+	{
+        it = m_tree.search(key);
+        if(it == cend()) {
+            throw std::invalid_argument("Invalid argument!");
+        }
+    }
+	catch (const std::exception& ex)
+	{
+        std::cerr << '\n' << ex.what() << '\n';
+        exit(0);
+	}
+    return (*it).second;
+}
+
+template <typename Key, typename T, typename Compare>
+typename mylib::map<Key, T, Compare>::size_type mylib::map<Key, T, Compare>::size() const noexcept
+{
+    return m_size;
+}
+
+template <typename Key, typename T, typename Compare>
+void mylib::map<Key, T, Compare>::clear() noexcept
+{
+    m_tree.clear();
+    m_size = 0;
+}
+
+template <typename Key, typename T, typename Compare>
+typename mylib::map<Key, T, Compare>::Iterator mylib::map<Key, T, Compare>::erase(Iterator pos)
+{
+    Iterator tmp = pos;
+    ++tmp;
+    m_tree.remove((*pos).first);
+    --m_size;
+    return tmp;
 }
