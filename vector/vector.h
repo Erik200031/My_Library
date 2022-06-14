@@ -10,6 +10,11 @@ namespace mylib {
     class vector
     {
     public:
+        typedef T value_type;
+        typedef size_t size_type;
+        typedef value_type& reference;
+        typedef const value_type& const_reference;
+
         vector();
         vector(int colum, const T& value);
         vector(int col);
@@ -26,6 +31,7 @@ namespace mylib {
         void pop_back();
         int size() const;
         int capacity() const;
+        bool empty() const;
         void shrink_to_fit();
     public:
         class iterator : public std::iterator<std::random_access_iterator_tag,T>
@@ -36,8 +42,11 @@ namespace mylib {
             iterator & operator= (const iterator& it);
             iterator operator+(int add);
             iterator operator-(int sub);
+            size_type operator+(iterator add);
+            size_type operator-(iterator sub);
             iterator& operator+=(int add);
             iterator& operator-=(int sub);
+            T& operator[](const size_type& index);
             T& operator++();
             T& operator++(int);
             T& operator--();
@@ -146,6 +155,12 @@ template<typename T>
 int mylib::vector<T>::size() const
 {
     return m_size;
+}
+
+template<typename T>
+bool mylib::vector<T>::empty() const
+{
+    return m_size == 0;
 }
 
 template<typename T>
@@ -311,12 +326,20 @@ mylib::vector<T>::iterator::iterator(const iterator& r)
 }
 
 template <typename T>
-typename mylib::vector<T>::iterator & mylib::vector<T>::iterator::operator=(const iterator& r)
+typename mylib::vector<T>::iterator& mylib::vector<T>::iterator::operator=(const iterator& r)
 {
     if(this == &r) { return *this; }
     this->iter = r.iter;
     return *this;
 }
+
+template <typename T>
+T& mylib::vector<T>::iterator::operator[](const size_type& index)
+{
+   
+    return iter[index];
+}
+
 
 template <typename T>
 typename mylib::vector<T>::iterator mylib::vector<T>::iterator::operator+(int add)
@@ -327,6 +350,12 @@ typename mylib::vector<T>::iterator mylib::vector<T>::iterator::operator+(int ad
 }
 
 template <typename T>
+typename mylib::vector<T>::size_type mylib::vector<T>::iterator::operator+(iterator add)
+{
+    return iter + add.iter;
+}
+
+template <typename T>
 typename mylib::vector<T>::iterator mylib::vector<T>::iterator::operator-(int sub)
 {
     iterator it;
@@ -334,6 +363,11 @@ typename mylib::vector<T>::iterator mylib::vector<T>::iterator::operator-(int su
     return it;
 }
 
+template <typename T>
+typename mylib::vector<T>::size_type mylib::vector<T>::iterator::operator-(iterator sub)
+{
+    return iter - sub.iter;
+}
 
 template <typename T>
 typename mylib::vector<T>::iterator& mylib::vector<T>::iterator::operator+=(int add) 

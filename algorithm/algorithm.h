@@ -17,6 +17,12 @@ namespace mylib
             return;
         }
         auto size = mylib::distance(first, last);
+        if(size == 2) {
+            if(cmp(first[0], first[1])) {
+                mylib::swap(first[0], first[1]);
+                return;
+            }
+        }
         for(int i = 0; i < size - 2; ++i) {
             if((2 * i) + 1 < size && !cmp(first[(2 * i) + 1], first[i])) {
                 std::swap(first[(2 * i) + 1], first[i]);
