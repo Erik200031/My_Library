@@ -106,6 +106,7 @@ namespace mylib
         Iterator end();
         Const_Iterator cbegin() const noexcept;
         Const_Iterator cend() const noexcept;
+        Compare& get_compare();
     private:
         void m_print_in_order(node* root);
         void balance(node* current);

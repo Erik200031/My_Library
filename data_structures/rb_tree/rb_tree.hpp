@@ -22,9 +22,10 @@ mylib::rb_tree<Key, T, Compare>& mylib::rb_tree<Key, T, Compare>::operator=(cons
     if(!empty()) {
         clear();
     }
-    for(auto it = rhs.begin(); it != rhs.end(); ++it) {
+    for(auto it = rhs.cbegin(); it != rhs.cend(); ++it) {
         insert(*it);
     }
+    return *this;
 }
 
 template <typename Key, typename T, typename Compare>    
@@ -35,6 +36,7 @@ mylib::rb_tree<Key, T, Compare>& mylib::rb_tree<Key, T, Compare>::operator=(rb_t
     }
     m_root = rhs.m_root;
     rhs.m_root = nullptr;
+    return *this;
 }
 
 template <typename Key, typename T, typename Compare>    
@@ -62,7 +64,7 @@ void mylib::rb_tree<Key, T, Compare>::insert(const value_type& value)
         }
     }
     current = new node(current_parent, nullptr, nullptr, RED, value); 
-    if(cmp(current->m_value.first, value.first)) {
+    if(cmp(current_parent->m_value.first, value.first)) {
         current_parent->m_right = current;
     } else {
         current_parent->m_left = current;
@@ -850,14 +852,14 @@ mylib::rb_tree<Key, T, Compare>::Const_Iterator::operator++()
         m_node = m_node->m_right;
     } else if(m_node->m_right == nullptr &&
      m_node->m_parent) {
-        node* tmp = m_node;
+        const node* tmp = m_node;
         while (m_node->m_parent && 
-        cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
+        (m_node->m_parent->m_value.first < m_node->m_value.first))
         {   
             m_node = m_node->m_parent;
         }
         if (m_node->m_parent &&
-         !cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
+         (m_node->m_parent->m_value.first > m_node->m_value.first))
         {
             m_node = m_node->m_parent;
         } else {
@@ -891,7 +893,7 @@ typename mylib::rb_tree<Key, T, Compare>::Const_Iterator&
         m_node = m_node->m_left;
     } else if(m_node->m_left == nullptr && m_node->m_parent) {
         while (m_node->m_parent && 
-        !cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
+        (m_node->m_parent->m_value.first > m_node->m_value.first))
         {   
             m_node = m_node->m_parent;
         }
@@ -917,4 +919,11 @@ mylib::rb_tree<Key, T, Compare>::Const_Iterator::operator--(int)
     Const_Iterator tmp = *this;
     --(*this);
     return tmp; 
+}
+
+
+template <typename Key, typename T, typename Compare>    
+Compare& mylib::rb_tree<Key, T, Compare>::get_compare()
+{
+    return cmp;
 }

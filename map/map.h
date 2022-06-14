@@ -89,6 +89,12 @@ namespace mylib
         };
 
         map() : m_tree{}, m_size{} {}
+        map(const map& rhs) : m_tree {rhs.m_tree}, m_size {rhs.m_size} {}
+        map(map&& rhs) noexcept : m_tree {rhs.m_tree}, m_size {rhs.m_size} {}
+        map& operator=(const map& rhs);
+        map& operator=(map&& rhs) noexcept;
+        explicit map(const Compare& comp);
+        map(std::initializer_list<value_type> ilist);
         ~map();
         
         T& at(const Key& key);
@@ -106,7 +112,7 @@ namespace mylib
         void insert(const value_type& value);
         Iterator erase(Iterator pos);
     private:
-        mylib::rb_tree<Key, T> m_tree;
+        mylib::rb_tree<Key, T, Compare> m_tree;
         size_type m_size;
     };
 
