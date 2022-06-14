@@ -111,6 +111,8 @@ namespace mylib
         void clear() noexcept;
         void insert(const value_type& value);
         Iterator erase(Iterator pos);
+        Iterator find(const Key& key);
+        Const_Iterator find(const Key& key) const;
     private:
         mylib::rb_tree<Key, T, Compare> m_tree;
         size_type m_size;
