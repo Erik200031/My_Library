@@ -55,14 +55,14 @@ void mylib::rb_tree<Key, T, Compare>::insert(const value_type& value)
     while (current != nullptr)
     {
         current_parent = current;
-        if(current && current->m_value.first > value.first) {
+        if(current && !cmp(current->m_value.first, value.first)) {
             current = current->m_left;
-        } else if(current && current->m_value.first < value.first) {
+        } else if(current && cmp(current->m_value.first, value.first)) {
             current = current->m_right;
         }
     }
     current = new node(current_parent, nullptr, nullptr, RED, value); 
-    if(current_parent->m_value.first < value.first) {
+    if(cmp(current->m_value.first, value.first)) {
         current_parent->m_right = current;
     } else {
         current_parent->m_left = current;
@@ -154,7 +154,7 @@ void mylib::rb_tree<Key, T, Compare>::left_rotate(node* current)
     }
     if(current->m_parent) {
         cur_right->m_parent = current->m_parent;
-        if(current->m_value < current->m_parent->m_value) {
+        if(cmp(current->m_value.first, current->m_parent->m_value.first)) {
             current->m_parent->m_left = cur_right;
         } else {
             current->m_parent->m_right = cur_right;
@@ -179,7 +179,7 @@ void mylib::rb_tree<Key, T, Compare>::right_rotate(node* current)
     }
     if(current->m_parent) {
         cur_left->m_parent = current->m_parent;
-        if(current->m_value < current->m_parent->m_value) {
+        if(cmp(current->m_value.first, current->m_parent->m_value.first)) {
             current->m_parent->m_left = cur_left;
         } else {
             current->m_parent->m_right = cur_left;
@@ -242,7 +242,7 @@ void mylib::rb_tree<Key, T, Compare>::remove(const Key& value)
      delete_ptr->m_parent->m_left == delete_ptr &&
      delete_ptr->m_parent->m_right &&
      delete_ptr->m_parent->m_right->m_color == BLACK ||
-     delete_ptr->m_parent->m_right == nullptr ) {
+     delete_ptr->m_parent->m_right == nullptr) {
         remove_case_2(delete_ptr);
     }
     else if(delete_ptr->m_color == BLACK && 
@@ -674,7 +674,7 @@ mylib::rb_tree<Key, T, Compare>::search(const Key& value) const
 {
     node* current = m_root;
     while (current != nullptr) {
-        if(current->m_value.first < value) {
+        if(cmp(current->m_value.first, value)) {
             current = current->m_right;
         } else if(current->m_value.first == value) {
             Const_Iterator cur = current;
@@ -692,7 +692,7 @@ mylib::rb_tree<Key, T, Compare>::search(const Key& value)
 {
     node* current = m_root;
     while (current != nullptr) {
-        if(current->m_value.first < value) {
+        if(cmp(current->m_value.first, value)) {
             current = current->m_right;
         } else if(current->m_value.first == value) {
             Iterator cur = current;
@@ -710,9 +710,6 @@ void mylib::rb_tree<Key, T, Compare>::clear()
     if(m_root == nullptr) {
         return;
     }
-    // for(auto it = begin(); it != end(); ++it) {
-    //     remove((*it).first);
-    // }
     while(m_root) {
         remove(m_root->m_value.first);
     }
@@ -753,12 +750,12 @@ mylib::rb_tree<Key, T, Compare>::Iterator::operator++()
      m_node->m_parent) {
         node* tmp = m_node;
         while (m_node->m_parent && 
-        m_node->m_parent->m_value < m_node->m_value)
+        cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
         {   
             m_node = m_node->m_parent;
         }
         if (m_node->m_parent &&
-         m_node->m_parent->m_value.first > m_node->m_value.first)
+         !cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
         {
             m_node = m_node->m_parent;
         } else {
@@ -792,7 +789,7 @@ mylib::rb_tree<Key, T, Compare>::Iterator::operator--()
         m_node = m_node->m_left;
     } else if(m_node->m_left == nullptr && m_node->m_parent) {
         while (m_node->m_parent && 
-        m_node->m_parent->m_value > m_node->m_value)
+        !cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
         {   
             m_node = m_node->m_parent;
         }
@@ -855,12 +852,12 @@ mylib::rb_tree<Key, T, Compare>::Const_Iterator::operator++()
      m_node->m_parent) {
         node* tmp = m_node;
         while (m_node->m_parent && 
-        m_node->m_parent->m_value < m_node->m_value)
+        cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
         {   
             m_node = m_node->m_parent;
         }
         if (m_node->m_parent &&
-         m_node->m_parent->m_value.first > m_node->m_value.first)
+         !cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
         {
             m_node = m_node->m_parent;
         } else {
@@ -894,7 +891,7 @@ typename mylib::rb_tree<Key, T, Compare>::Const_Iterator&
         m_node = m_node->m_left;
     } else if(m_node->m_left == nullptr && m_node->m_parent) {
         while (m_node->m_parent && 
-        m_node->m_parent->m_value > m_node->m_value)
+        !cmp(m_node->m_parent->m_value.first, m_node->m_value.first))
         {   
             m_node = m_node->m_parent;
         }

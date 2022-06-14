@@ -124,6 +124,7 @@ namespace mylib
         void remove_case_9(node* currect);
     private:
         node* m_root;
+        Compare cmp;
     };
     
 } // namespace mylib
