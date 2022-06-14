@@ -1,8 +1,6 @@
 #ifndef PRIORITY_QUEUE_H
 #define PRIORITY_QUEUE_H
 
-#include <optional>
-
 #include "../vector/vector.h"
 #include "../algorithm/algorithm.h"
 
