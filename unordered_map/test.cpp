@@ -1,8 +1,11 @@
 #include <iostream>
 #include <vector>
-//#include "unordered_map.h"
-#include "hash.h"
+#include <functional>
+#include "unordered_map.h"
+#include <string>
 
 int main() {
+    mylib::unordered_map<int, int> b;
+    b.insert({123, 4});
 
 }

@@ -8,7 +8,7 @@
 namespace mylib {
 
     template <class T>
-    class Forward_list;
+    class forward_list;
 
     template <class T>
     class Node 
@@ -23,13 +23,13 @@ namespace mylib {
         ~Node() = default;
     private:
         template <class U>
-        friend class Forward_list;
+        friend class forward_list;
         T m_data;
         Node* m_next;
     };
 
     template <class U>
-    class Forward_list
+    class forward_list
     {
     public:
         typedef U value_type;
@@ -55,7 +55,7 @@ namespace mylib {
             U* operator->();
             Node<U>*& get() {return it;}
         private:
-            friend class Forward_list;
+            friend class forward_list;
             Node<U>* it;
         };
 
@@ -78,20 +78,20 @@ namespace mylib {
             U* operator->();
             const Node<U>*& get() const {return it;}
         private:
-            friend class Forward_list;
+            friend class forward_list;
             const Node<U>* it;
         };
 
     public:
-        Forward_list();
-        ~Forward_list();
-        Forward_list(const Forward_list&);
-        Forward_list(Forward_list&&) noexcept;
-        Forward_list& operator=(const Forward_list&);
-        Forward_list& operator=(Forward_list&&) noexcept;
-        Forward_list(int count);
-        Forward_list(int count, const U& element);
-        Forward_list(std::initializer_list<U> ilist);
+        forward_list();
+        ~forward_list();
+        forward_list(const forward_list&);
+        forward_list(forward_list&&) noexcept;
+        forward_list& operator=(const forward_list&);
+        forward_list& operator=(forward_list&&) noexcept;
+        forward_list(int count);
+        forward_list(int count, const U& element);
+        forward_list(std::initializer_list<U> ilist);
     public:
         void push_front(const U& element);
         U& front();
@@ -111,7 +111,7 @@ namespace mylib {
         void assign(InputIter first, InputIter last);
         void assign(std::initializer_list<U> ilist);
         mylib::Node<U>* do_reverse(Node<U>* head);
-        void merge(Forward_list<U>& rhs);
+        void merge(forward_list<U>& rhs);
         bool is_sorted_list() const;
         size_t unique();
         Iterator begin();
@@ -121,13 +121,13 @@ namespace mylib {
         Iterator before_begin() const;
 
     public:
-        bool operator==(const Forward_list<U>& rhs) const;
-        bool operator!=(const Forward_list<U>& rhs) const;  
-        bool operator<(const Forward_list<U>& rhs) const;      
-        bool operator>(const Forward_list<U>& rhs) const;      
-        bool operator<=(const Forward_list<U>& rhs) const;      
-        bool operator>=(const Forward_list<U>& rhs) const; 
-        friend std::ostream& operator<<(std::ostream& os, Forward_list<U>& lst) 
+        bool operator==(const forward_list<U>& rhs) const;
+        bool operator!=(const forward_list<U>& rhs) const;  
+        bool operator<(const forward_list<U>& rhs) const;      
+        bool operator>(const forward_list<U>& rhs) const;      
+        bool operator<=(const forward_list<U>& rhs) const;      
+        bool operator>=(const forward_list<U>& rhs) const; 
+        friend std::ostream& operator<<(std::ostream& os, forward_list<U>& lst) 
         {
             for(auto it : lst) {
                 os << it << " ";

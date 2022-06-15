@@ -1,39 +1,39 @@
 template <class U>
-mylib::Forward_list<U>::Forward_list() : m_head{} {}
+mylib::forward_list<U>::forward_list() : m_head{} {}
 
 template <class U>
-mylib::Forward_list<U>::~Forward_list()
+mylib::forward_list<U>::~forward_list()
 {
     if(!is_empty())
     clear();
 }
 
 template <class U>
-void mylib::Forward_list<U>::push_front(const U& element)
+void mylib::forward_list<U>::push_front(const U& element)
 {
     m_head = new Node(element, m_head);
 }
 
 template <class U>
-U& mylib::Forward_list<U>::front()
+U& mylib::forward_list<U>::front()
 {
     return m_head->m_data;
 }
 
 template <class U>
-const U& mylib::Forward_list<U>::front() const
+const U& mylib::forward_list<U>::front() const
 {
     return m_head->m_data;
 }
 
 template <class U>
-bool mylib::Forward_list<U>::is_empty() const 
+bool mylib::forward_list<U>::is_empty() const 
 {
     return m_head == nullptr;
 }
 
 template <class U>
-void mylib::Forward_list<U>::pop_front() 
+void mylib::forward_list<U>::pop_front() 
 {
     if(m_head == nullptr) {
         return;
@@ -50,7 +50,7 @@ void mylib::Forward_list<U>::pop_front()
 }
 
 template <class U>
-mylib::Forward_list<U>::Forward_list(int count) : m_head {}
+mylib::forward_list<U>::forward_list(int count) : m_head {}
 {
     while (count)
     {
@@ -60,7 +60,7 @@ mylib::Forward_list<U>::Forward_list(int count) : m_head {}
 }
 
 template <class U>
-mylib::Forward_list<U>::Forward_list(int count, const U& element) : m_head {}
+mylib::forward_list<U>::forward_list(int count, const U& element) : m_head {}
 {
     while (count)
     {
@@ -70,7 +70,7 @@ mylib::Forward_list<U>::Forward_list(int count, const U& element) : m_head {}
 }
 
 template <class U>
-mylib::Forward_list<U>::Forward_list(std::initializer_list<U> ilist)
+mylib::forward_list<U>::forward_list(std::initializer_list<U> ilist)
 {
         m_head = nullptr;
 
@@ -83,7 +83,7 @@ mylib::Forward_list<U>::Forward_list(std::initializer_list<U> ilist)
 }
 
 template <class U>
-U& mylib::Forward_list<U>::operator[](int index) const 
+U& mylib::forward_list<U>::operator[](int index) const 
 {
     Node<U>* current  = m_head;
     while(index) {
@@ -94,7 +94,7 @@ U& mylib::Forward_list<U>::operator[](int index) const
 }
 
 template <class U>
-void mylib::Forward_list<U>::clear() 
+void mylib::forward_list<U>::clear() 
 {
     if(!is_empty()) {
         while (m_head)
@@ -105,7 +105,7 @@ void mylib::Forward_list<U>::clear()
 }
 
 template <class U>
-mylib::Forward_list<U>::Forward_list(const Forward_list& rhs)
+mylib::forward_list<U>::forward_list(const forward_list& rhs)
 {
     m_head = nullptr;
     for (Const_Iterator it = rhs.cbegin(); it != rhs.cend(); ++it)
@@ -115,14 +115,14 @@ mylib::Forward_list<U>::Forward_list(const Forward_list& rhs)
 }
 
 template <class U>
-mylib::Forward_list<U>::Forward_list(Forward_list&& rhs) noexcept 
+mylib::forward_list<U>::forward_list(forward_list&& rhs) noexcept 
 {
     m_head = rhs.m_head;
     rhs.m_head = nullptr;
 }
 
 template <class U>
-mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(const Forward_list<U>& rhs) 
+mylib::forward_list<U>& mylib::forward_list<U>::operator=(const forward_list<U>& rhs) 
 {
     if(this == &rhs) {
         return *this;
@@ -140,7 +140,7 @@ mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(const Forward_list<U>&
 }
 
 template <class U>
-mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(Forward_list<U>&& rhs) noexcept 
+mylib::forward_list<U>& mylib::forward_list<U>::operator=(forward_list<U>&& rhs) noexcept 
 {
     if(this == &rhs) {
         return *this;
@@ -153,8 +153,8 @@ mylib::Forward_list<U>& mylib::Forward_list<U>::operator=(Forward_list<U>&& rhs)
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::insert_after
-(mylib::Forward_list<U>::Iterator pos, const U& element) 
+typename mylib::forward_list<U>::Iterator mylib::forward_list<U>::insert_after
+(mylib::forward_list<U>::Iterator pos, const U& element) 
 {
     if(pos == before_begin()) {
         push_front(element);
@@ -166,8 +166,8 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::insert_after
 
 template <class U>
 template <class... Args>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::emplace_after
-(mylib::Forward_list<U>::Iterator pos, Args&&... args) 
+typename mylib::forward_list<U>::Iterator mylib::forward_list<U>::emplace_after
+(mylib::forward_list<U>::Iterator pos, Args&&... args) 
 {
     if (pos == before_begin()) {
         push_front(U{args...});
@@ -178,7 +178,7 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::emplace_after
 }
 
 template <class U>
-void mylib::Forward_list<U>::assign(size_t count, const U& element)
+void mylib::forward_list<U>::assign(size_t count, const U& element)
 {
     if(m_head != nullptr) {
         clear();
@@ -191,7 +191,7 @@ void mylib::Forward_list<U>::assign(size_t count, const U& element)
 
 template <class U>
 template <typename InputIter>
-void mylib::Forward_list<U>::assign(InputIter first, InputIter last)
+void mylib::forward_list<U>::assign(InputIter first, InputIter last)
 {
     if(first >= last) {
         return;
@@ -208,7 +208,7 @@ void mylib::Forward_list<U>::assign(InputIter first, InputIter last)
 }
 
 template <class U>
-void mylib::Forward_list<U>::assign(std::initializer_list<U> ilist)
+void mylib::forward_list<U>::assign(std::initializer_list<U> ilist)
 {
     if(m_head != nullptr) {
         clear();
@@ -222,8 +222,8 @@ void mylib::Forward_list<U>::assign(std::initializer_list<U> ilist)
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::erase_after
-(mylib::Forward_list<U>::Iterator pos) 
+typename mylib::forward_list<U>::Iterator mylib::forward_list<U>::erase_after
+(mylib::forward_list<U>::Iterator pos) 
 {
     if(pos == before_begin()) {
         pop_front();
@@ -236,7 +236,7 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::erase_after
 }
 
 template <class U>
-void mylib::Forward_list<U>::swap(int index1, int index2)
+void mylib::forward_list<U>::swap(int index1, int index2)
 {
     Node<U>* cur_1 = m_head;
     Node<U>* cur_2 = m_head;
@@ -254,12 +254,12 @@ void mylib::Forward_list<U>::swap(int index1, int index2)
 }
 
 template <class U>
-void mylib::Forward_list<U>::merge_for_sort(int left, int mid, int right)
+void mylib::forward_list<U>::merge_for_sort(int left, int mid, int right)
 {
     int  sub_list_one = mid - left + 1;
     int  sub_list_two = right - mid;
-    mylib::Forward_list<U> left_list(sub_list_one);
-    mylib::Forward_list<U> right_list(sub_list_two);
+    mylib::forward_list<U> left_list(sub_list_one);
+    mylib::forward_list<U> right_list(sub_list_two);
     for (auto i = 0; i < sub_list_one; i++)
         left_list[i] = (*this)[left + i];
     for (auto j = 0; j < sub_list_two; j++)
@@ -291,7 +291,7 @@ void mylib::Forward_list<U>::merge_for_sort(int left, int mid, int right)
 } 
 
 template <class U>
-bool mylib::Forward_list<U>::is_sorted_list() const
+bool mylib::forward_list<U>::is_sorted_list() const
 {
     Node<U>* cur = m_head;
     Node<U>* after_cur = cur->m_next;
@@ -306,7 +306,7 @@ bool mylib::Forward_list<U>::is_sorted_list() const
 }
 
 template <class U>
-void mylib::Forward_list<U>::mergeSort(int begin, int end)
+void mylib::forward_list<U>::mergeSort(int begin, int end)
 {
     if (begin >= end)
         return;
@@ -318,7 +318,7 @@ void mylib::Forward_list<U>::mergeSort(int begin, int end)
 }
 
 template <class U>
-void mylib::Forward_list<U>::sort()
+void mylib::forward_list<U>::sort()
 {
     int end {};
     for(auto it: *this) {
@@ -329,7 +329,7 @@ void mylib::Forward_list<U>::sort()
 }
 
 template <class U>
-mylib::Node<U>* mylib::Forward_list<U>::do_reverse(mylib::Node<U>* head) 
+mylib::Node<U>* mylib::forward_list<U>::do_reverse(mylib::Node<U>* head) 
 {
     if (head == nullptr || head->m_next == nullptr)
         return head;
@@ -340,13 +340,13 @@ mylib::Node<U>* mylib::Forward_list<U>::do_reverse(mylib::Node<U>* head)
 }
 
 template <class U>
-void mylib::Forward_list<U>::reverse()
+void mylib::forward_list<U>::reverse()
 {
     m_head =  do_reverse(m_head);
 }
 
 template <class U>
-void mylib::Forward_list<U>::merge(Forward_list<U>& rhs) 
+void mylib::forward_list<U>::merge(forward_list<U>& rhs) 
 {
     if(is_sorted_list() && rhs.is_sorted_list()) {
         Node<U>* cur = m_head;
@@ -361,7 +361,7 @@ void mylib::Forward_list<U>::merge(Forward_list<U>& rhs)
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::begin()
+typename mylib::forward_list<U>::Iterator mylib::forward_list<U>::begin()
 {
     Iterator tmp;
     tmp.it = m_head;
@@ -369,7 +369,7 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::begin()
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Const_Iterator mylib::Forward_list<U>::cbegin() const 
+typename mylib::forward_list<U>::Const_Iterator mylib::forward_list<U>::cbegin() const 
 {
     Const_Iterator tmp;
     tmp.it = m_head;
@@ -377,7 +377,7 @@ typename mylib::Forward_list<U>::Const_Iterator mylib::Forward_list<U>::cbegin()
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::before_begin() const 
+typename mylib::forward_list<U>::Iterator mylib::forward_list<U>::before_begin() const 
 {
     Iterator tmp;
     tmp.it = m_head - 1;
@@ -385,7 +385,7 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::before_begin()
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::end()
+typename mylib::forward_list<U>::Iterator mylib::forward_list<U>::end()
 {
     Iterator tmp;
     tmp.it = m_head;
@@ -396,7 +396,7 @@ typename mylib::Forward_list<U>::Iterator mylib::Forward_list<U>::end()
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Const_Iterator mylib::Forward_list<U>::cend() const 
+typename mylib::forward_list<U>::Const_Iterator mylib::forward_list<U>::cend() const 
 {
     Const_Iterator tmp;
     tmp.it = m_head;
@@ -407,7 +407,7 @@ typename mylib::Forward_list<U>::Const_Iterator mylib::Forward_list<U>::cend() c
 }
 
 template <class U>
-bool mylib::Forward_list<U>::operator==(const mylib::Forward_list<U>& rhs) const 
+bool mylib::forward_list<U>::operator==(const mylib::forward_list<U>& rhs) const 
 {
     Const_Iterator it = cbegin();
     int i{};
@@ -421,13 +421,13 @@ bool mylib::Forward_list<U>::operator==(const mylib::Forward_list<U>& rhs) const
 }
 
 template <class U>
-bool mylib::Forward_list<U>::operator!=(const mylib::Forward_list<U>& rhs) const 
+bool mylib::forward_list<U>::operator!=(const mylib::forward_list<U>& rhs) const 
 {
     return !(*this == rhs);
 }
 
 template <class U>
-bool mylib::Forward_list<U>::operator<(const mylib::Forward_list<U>& rhs) const 
+bool mylib::forward_list<U>::operator<(const mylib::forward_list<U>& rhs) const 
 {
    Const_Iterator it = cbegin();
     int i{};
@@ -441,13 +441,13 @@ bool mylib::Forward_list<U>::operator<(const mylib::Forward_list<U>& rhs) const
 }
 
 template <class U>
-bool mylib::Forward_list<U>::operator>(const mylib::Forward_list<U>& rhs) const 
+bool mylib::forward_list<U>::operator>(const mylib::forward_list<U>& rhs) const 
 {
     return !(*this <= rhs);
 }
 
 template <class U>
-bool mylib::Forward_list<U>::operator<=(const mylib::Forward_list<U>& rhs) const 
+bool mylib::forward_list<U>::operator<=(const mylib::forward_list<U>& rhs) const 
 {
     Const_Iterator it = cbegin();
     int i{};
@@ -461,22 +461,22 @@ bool mylib::Forward_list<U>::operator<=(const mylib::Forward_list<U>& rhs) const
 }
 
 template <class U>
-bool mylib::Forward_list<U>::operator>=(const mylib::Forward_list<U>& rhs) const 
+bool mylib::forward_list<U>::operator>=(const mylib::forward_list<U>& rhs) const 
 {
     return !(*this < rhs);
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator& 
-mylib::Forward_list<U>::Iterator::operator++() 
+typename mylib::forward_list<U>::Iterator& 
+mylib::forward_list<U>::Iterator::operator++() 
 {
     it = it->m_next;
     return (*this);
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator 
-mylib::Forward_list<U>::Iterator::operator++(int) 
+typename mylib::forward_list<U>::Iterator 
+mylib::forward_list<U>::Iterator::operator++(int) 
 {
     Iterator tmp;
     tmp.it = this->it;
@@ -485,20 +485,20 @@ mylib::Forward_list<U>::Iterator::operator++(int)
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Iterator::operator==(Iterator& rhs)
+bool mylib::forward_list<U>::Iterator::operator==(Iterator& rhs)
 {
     return (this->it == rhs.it);
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Iterator::operator!=(Iterator& rhs)
+bool mylib::forward_list<U>::Iterator::operator!=(Iterator& rhs)
 {
     return !(this->it == rhs.it);
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator& 
-mylib::Forward_list<U>::Iterator::operator=(const Iterator& rhs) 
+typename mylib::forward_list<U>::Iterator& 
+mylib::forward_list<U>::Iterator::operator=(const Iterator& rhs) 
 {
     if(this == &rhs) {
         return *this;
@@ -511,8 +511,8 @@ mylib::Forward_list<U>::Iterator::operator=(const Iterator& rhs)
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Iterator& 
-mylib::Forward_list<U>::Iterator::operator=(Iterator&& rhs) 
+typename mylib::forward_list<U>::Iterator& 
+mylib::forward_list<U>::Iterator::operator=(Iterator&& rhs) 
 {
     if(this == &rhs) {
         return *this;
@@ -525,28 +525,28 @@ mylib::Forward_list<U>::Iterator::operator=(Iterator&& rhs)
 }
 
 template <class U>
-U& mylib::Forward_list<U>::Iterator::operator*() 
+U& mylib::forward_list<U>::Iterator::operator*() 
 {
     return it->m_data;
 }
 
 template <class U>
-U* mylib::Forward_list<U>::Iterator::operator->()
+U* mylib::forward_list<U>::Iterator::operator->()
 {
     return it;
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Const_Iterator&
-mylib::Forward_list<U>::Const_Iterator::operator++() 
+typename mylib::forward_list<U>::Const_Iterator&
+mylib::forward_list<U>::Const_Iterator::operator++() 
 {
     it = it->m_next;
     return (*this);
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Const_Iterator 
-mylib::Forward_list<U>::Const_Iterator::operator++(int) 
+typename mylib::forward_list<U>::Const_Iterator 
+mylib::forward_list<U>::Const_Iterator::operator++(int) 
 {
     Const_Iterator tmp;
     tmp.it = this->it;
@@ -555,20 +555,20 @@ mylib::Forward_list<U>::Const_Iterator::operator++(int)
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Const_Iterator::operator==(Const_Iterator& rhs)
+bool mylib::forward_list<U>::Const_Iterator::operator==(Const_Iterator& rhs)
 {
     return (this->it == rhs.it);
 }
 
 template <class U>
-bool mylib::Forward_list<U>::Const_Iterator::operator!=(Const_Iterator& rhs)
+bool mylib::forward_list<U>::Const_Iterator::operator!=(Const_Iterator& rhs)
 {
     return !(this->it == rhs.it);
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Const_Iterator& 
-mylib::Forward_list<U>::Const_Iterator::operator=(const Const_Iterator& rhs) 
+typename mylib::forward_list<U>::Const_Iterator& 
+mylib::forward_list<U>::Const_Iterator::operator=(const Const_Iterator& rhs) 
 {
     if(this == &rhs) {
         return *this;
@@ -581,8 +581,8 @@ mylib::Forward_list<U>::Const_Iterator::operator=(const Const_Iterator& rhs)
 }
 
 template <class U>
-typename mylib::Forward_list<U>::Const_Iterator& 
-mylib::Forward_list<U>::Const_Iterator::operator=(Const_Iterator&& rhs) 
+typename mylib::forward_list<U>::Const_Iterator& 
+mylib::forward_list<U>::Const_Iterator::operator=(Const_Iterator&& rhs) 
 {
     if(this == &rhs) {
         return *this;
@@ -595,19 +595,19 @@ mylib::Forward_list<U>::Const_Iterator::operator=(Const_Iterator&& rhs)
 }
 
 template <class U>
-const U& mylib::Forward_list<U>::Const_Iterator::operator*() const
+const U& mylib::forward_list<U>::Const_Iterator::operator*() const
 {
     return it->m_data;
 }
 
 template <class U>
-U* mylib::Forward_list<U>::Const_Iterator::operator->()
+U* mylib::forward_list<U>::Const_Iterator::operator->()
 {
     return &(*it);
 }
 
 template <class U>
-size_t mylib::Forward_list<U>::unique()
+size_t mylib::forward_list<U>::unique()
 {
     size_t count = -1;
     if(m_head == nullptr) {
