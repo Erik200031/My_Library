@@ -1,19 +1,20 @@
 #ifndef UNORDERED_MAP_H
 #define UNORDERED_MAP_H
 
-#include <functional>
-#include <vector>
-#include <forward_list>
-#include <utility>
+#include "../vector/vector.h"
+#include "../forward_list/forward_list.h"
+#include "../utility/utility.h"
+#include "../algorithm/equal_to.h"
+#include "hash.h"
 
 namespace mylib
 {
     template <class Key, class T,
-    class Hash = std::hash<Key>,
-    class KeyEqual = std::equal_to<Key>> 
+    class Hash = mylib::hash<Key>,
+    class KeyEqual = mylib::equal_to<Key>> 
     class unordered_map
     {
-
+    public:
 
 
     private:
