@@ -44,6 +44,11 @@ template <class Key, class T,
 void mylib::unordered_map<Key, T, Hash, KeyEqual>::insert(value_type&& value)
 {
     ++m_size;
+    if(load_factor() > max_load_factor()) {
+        auto tmp_map = m_map;
+        m_map.clear();
+        
+    }
     m_map[m_hasher(value.first, m_bucket_count)].push_front(value);
 }
 
@@ -51,5 +56,12 @@ template <class Key, class T,
  class Hash, class KeyEqual>
 float mylib::unordered_map<Key, T, Hash, KeyEqual>::load_factor() const
 {
-    
+    return (m_map / m_size);
+}
+
+template <class Key, class T,
+ class Hash, class KeyEqual>
+float mylib::unordered_map<Key, T, Hash, KeyEqual>::max_load_factor() const
+{
+    return m_max_load_factor;
 }

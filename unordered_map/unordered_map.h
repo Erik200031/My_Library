@@ -8,7 +8,7 @@
 #include "hash.h"
 
 #define DEFAULT_BUCKET_COUNT 7
-#define MAX_LOAD_FACTOR 
+#define MAX_LOAD_FACTOR 1.7
 
 namespace mylib
 {
@@ -28,15 +28,19 @@ namespace mylib
         typedef Hash hasher;
         typedef KeyEqual key_equal;
 
-        unordered_map() : m_map(DEFAULT_BUCKET_COUNT), m_bucket_count {DEFAULT_BUCKET_COUNT}, m_hasher {} {}
-        unordered_map(size_type bucket_count) 
-         : m_map(bucket_count), m_bucket_count {bucket_count}, m_hasher {} {}
+        unordered_map() : m_map(DEFAULT_BUCKET_COUNT), m_hasher {}, 
+         m_size {}, m_max_load_factor {MAX_LOAD_FACTOR} {}
+        unordered_map(size_type bucket_count) : m_map(bucket_count), m_hasher {},
+         m_size {}, m_max_load_factor{MAX_LOAD_FACTOR} {}
         unordered_map(size_type bucket_count, const Hash& hash) 
-         : m_map(bucket_count), m_bucket_count {bucket_count}, m_hasher {hash} {}
-        unordered_map(const unordered_map& rhs) : m_map {rhs.m_map}, 
-         m_bucket_count {rhs.m_bucket_count}, m_hasher {rhs.m_hasher} {}
-        unordered_map(unordered_map&& rhs) noexcept : m_map {rhs.m_map}, 
-         m_bucket_count {rhs.m_bucket_count}, m_hasher {rhs.m_hasher} {}
+        : m_map(bucket_count), m_hasher {hash},
+         m_size {}, m_max_load_factor{MAX_LOAD_FACTOR} {}
+        unordered_map(const unordered_map& rhs) 
+         : m_map {rhs.m_map}, m_hasher {rhs.m_hasher}, 
+         m_size{rhs.m_size}, m_max_load_factor{rhs.m_max_load_factor} {}
+        unordered_map(unordered_map&& rhs) noexcept 
+         : m_map {std::move(rhs.m_map)}, m_hasher {rhs.m_hasher}, 
+         m_size{rhs.m_size}, m_max_load_factor{rhs.m_max_load_factor} {}
         unordered_map& operator=(const unordered_map& rhs);
         unordered_map& operator=(unordered_map&& rhs) noexcept;
 
@@ -44,14 +48,15 @@ namespace mylib
         [[nodiscard]] bool empty() const noexcept;
         size_type size() const;
         float load_factor() const;
+        float max_load_factor() const;
         // mylib::pair<iterator,bool> 
         void insert(value_type&& value);
         size_type bucket_count() const;
     private:
         mylib::vector<mylib::forward_list<mylib::pair<Key, T>>> m_map;
-        size_type m_bucket_count;
         Hash m_hasher;
         size_type m_size;
+        float m_max_load_factor;
     };
     
 } // namespace mylib
