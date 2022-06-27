@@ -96,7 +96,7 @@ namespace mylib {
         void push_front(const U& element);
         U& front();
         const U& front() const;
-        bool is_empty() const;
+        bool empty() const;
         void pop_front();
         void clear();
         Iterator insert_after(Iterator pos, const U& element);

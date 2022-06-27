@@ -4,7 +4,7 @@ mylib::forward_list<U>::forward_list() : m_head{} {}
 template <class U>
 mylib::forward_list<U>::~forward_list()
 {
-    if(!is_empty())
+    if(!empty())
     clear();
 }
 
@@ -27,7 +27,7 @@ const U& mylib::forward_list<U>::front() const
 }
 
 template <class U>
-bool mylib::forward_list<U>::is_empty() const 
+bool mylib::forward_list<U>::empty() const 
 {
     return m_head == nullptr;
 }
@@ -96,7 +96,7 @@ U& mylib::forward_list<U>::operator[](int index) const
 template <class U>
 void mylib::forward_list<U>::clear() 
 {
-    if(!is_empty()) {
+    if(!empty()) {
         while (m_head)
         {
             this->pop_front();
@@ -146,7 +146,7 @@ mylib::forward_list<U>& mylib::forward_list<U>::operator=(forward_list<U>&& rhs)
     if(this == &rhs) {
         return *this;
     }
-    if(!is_empty())
+    if(!empty())
         clear();
     this->m_head = rhs.m_head;
     rhs.m_head = nullptr;
