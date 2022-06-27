@@ -2,9 +2,9 @@
 #define POOL_ALLOCATOR_H
 
 #include <iostream>
-// #include "../forward_list/forward_list.h"
+#include "../forward_list/forward_list.h"
 #include <exception>
-#include <forward_list>
+
 namespace mylib
 {
     template <class T>
@@ -40,7 +40,7 @@ namespace mylib
         int8_t* m_start;
         int8_t* m_end;
 
-        std::forward_list<int8_t*> m_buffer;
+        mylib::forward_list<int8_t*> m_buffer;
     };
     
 } // namespace mylib
