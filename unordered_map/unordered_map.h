@@ -43,7 +43,7 @@ namespace mylib
          m_size{rhs.m_size}, m_max_load_factor{rhs.m_max_load_factor} {}
         unordered_map& operator=(const unordered_map& rhs);
         unordered_map& operator=(unordered_map&& rhs) noexcept;
-
+        T& operator[](Key&& key);
 
         [[nodiscard]] bool empty() const noexcept;
         size_type size() const;
@@ -52,6 +52,7 @@ namespace mylib
         // mylib::pair<iterator,bool> 
         void insert(value_type&& value);
         size_type bucket_count() const;
+
     private:
         mylib::vector<mylib::forward_list<mylib::pair<Key, T>>> m_map;
         Hash m_hasher;

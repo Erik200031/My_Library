@@ -36,7 +36,7 @@ template <class Key, class T,
 mylib::unordered_map<Key, T, Hash, KeyEqual>::size_type 
 mylib::unordered_map<Key, T, Hash, KeyEqual>::bucket_count() const
 {
-    return m_bucket_count;
+    return m_map.size();
 }
 
 template <class Key, class T,
@@ -44,19 +44,18 @@ template <class Key, class T,
 void mylib::unordered_map<Key, T, Hash, KeyEqual>::insert(value_type&& value)
 {
     ++m_size;
-    if(load_factor() > max_load_factor()) {
-        auto tmp_map = m_map;
-        m_map.clear();
-        
-    }
-    m_map[m_hasher(value.first, m_bucket_count)].push_front(value);
+    // if(load_factor() > max_load_factor()) {
+    //     auto tmp_map = m_map;
+    //     m_map.clear();
+    // }
+    m_map[m_hasher(value.first, bucket_count())].push_front(value);
 }
 
 template <class Key, class T,
  class Hash, class KeyEqual>
 float mylib::unordered_map<Key, T, Hash, KeyEqual>::load_factor() const
 {
-    return (m_map / m_size);
+    return (m_map.size() / m_size);
 }
 
 template <class Key, class T,
@@ -64,4 +63,19 @@ template <class Key, class T,
 float mylib::unordered_map<Key, T, Hash, KeyEqual>::max_load_factor() const
 {
     return m_max_load_factor;
+}
+
+template <class Key, class T,
+ class Hash, class KeyEqual>
+T& mylib::unordered_map<Key, T, Hash, KeyEqual>::operator[](Key&& key)
+{
+    auto& lst = m_map[m_hasher(key, bucket_count())];
+    if(lst.front().first != key) {
+        auto it = lst.begin();
+        while ((*it).first != key) {
+            ++it;
+        }
+        return (*it).second;
+    }
+    return m_map[m_hasher(key, bucket_count())].front().second;
 }

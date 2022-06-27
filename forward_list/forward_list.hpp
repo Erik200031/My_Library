@@ -110,8 +110,9 @@ mylib::forward_list<U>::forward_list(const forward_list& rhs)
     m_head = nullptr;
     for (Const_Iterator it = rhs.cbegin(); it != rhs.cend(); ++it)
     {
-        push_back(*it);
+        push_front(*it);
     }
+    reverse();
 }
 
 template <class U>
