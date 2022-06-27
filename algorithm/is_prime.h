@@ -2,6 +2,7 @@
 #define IS_PRIME_H
 
 #include <iostream>
+#include <math.h>
 
 namespace mylib
 {
