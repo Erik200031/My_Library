@@ -72,8 +72,12 @@ T& mylib::unordered_map<Key, T, Hash, KeyEqual>::operator[](Key&& key)
     auto& lst = m_map[m_hasher(key, bucket_count())];
     if(lst.front().first != key) {
         auto it = lst.begin();
-        while ((*it).first != key) {
+        while (it != lst.end() && (*it).first != key) {
             ++it;
+        }
+        if(it == lst.end()) {
+            insert(mylib::make_pair(key, T{}));
+            return (*this)[std::move(key)];
         }
         return (*it).second;
     }
