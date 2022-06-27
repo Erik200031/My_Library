@@ -26,14 +26,14 @@ mylib::unordered_map<Key, T, Hash, KeyEqual>::empty() const noexcept
 
 template <class Key, class T,
  class Hash, class KeyEqual>
-mylib::unordered_map<Key, T, Hash, KeyEqual>::size_type 
+typename mylib::unordered_map<Key, T, Hash, KeyEqual>::size_type 
 mylib::unordered_map<Key, T, Hash, KeyEqual>::size() const
 {
     return m_size;
 }
 template <class Key, class T,
  class Hash, class KeyEqual>
-mylib::unordered_map<Key, T, Hash, KeyEqual>::size_type 
+typename mylib::unordered_map<Key, T, Hash, KeyEqual>::size_type 
 mylib::unordered_map<Key, T, Hash, KeyEqual>::bucket_count() const
 {
     return m_map.size();
@@ -41,7 +41,7 @@ mylib::unordered_map<Key, T, Hash, KeyEqual>::bucket_count() const
 
 template <class Key, class T,
  class Hash, class KeyEqual>
-void mylib::unordered_map<Key, T, Hash, KeyEqual>::insert(value_type&& value)
+void mylib::unordered_map<Key, T, Hash, KeyEqual>::insert(const value_type& value)
 {
     ++m_size;
     // if(load_factor() > max_load_factor()) {
@@ -67,19 +67,20 @@ float mylib::unordered_map<Key, T, Hash, KeyEqual>::max_load_factor() const
 
 template <class Key, class T,
  class Hash, class KeyEqual>
-T& mylib::unordered_map<Key, T, Hash, KeyEqual>::operator[](Key&& key)
+T& mylib::unordered_map<Key, T, Hash, KeyEqual>::operator[](const Key& key)
 {
-    auto& lst = m_map[m_hasher(key, bucket_count())];
-    if(lst.front().first != key) {
-        auto it = lst.begin();
-        while (it != lst.end() && (*it).first != key) {
-            ++it;
-        }
-        if(it == lst.end()) {
-            insert(mylib::make_pair(key, T{}));
-            return (*this)[std::move(key)];
-        }
-        return (*it).second;
-    }
+    // auto& lst = m_map[m_hasher(key, bucket_count())];
+    // if(lst.front().first != key) {
+    //     auto it = lst.begin();
+    //     while (it.get() != nullptr && (*it).first != key) {
+    //         std::cout << lst.front().first << "\n";
+    //         ++it;
+    //     }
+    //     // if(it == lst.end()) {
+    //     //     insert(mylib::make_pair(key, T{}));
+    //     //     return (*this)[std::move(key)];
+    //     // }
+    //     return (*it).second;
+    // }
     return m_map[m_hasher(key, bucket_count())].front().second;
 }
