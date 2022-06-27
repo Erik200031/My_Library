@@ -69,18 +69,17 @@ template <class Key, class T,
  class Hash, class KeyEqual>
 T& mylib::unordered_map<Key, T, Hash, KeyEqual>::operator[](const Key& key)
 {
-    // auto& lst = m_map[m_hasher(key, bucket_count())];
-    // if(lst.front().first != key) {
-    //     auto it = lst.begin();
-    //     while (it.get() != nullptr && (*it).first != key) {
-    //         std::cout << lst.front().first << "\n";
-    //         ++it;
-    //     }
-    //     // if(it == lst.end()) {
-    //     //     insert(mylib::make_pair(key, T{}));
-    //     //     return (*this)[std::move(key)];
-    //     // }
-    //     return (*it).second;
-    // }
+    auto& lst = m_map[m_hasher(key, bucket_count())];
+    if(lst.front().first != key) {
+        auto it = lst.begin();
+        while (it.get() != nullptr && (*it).first != key) {
+            ++it;
+        }
+        // if(it == lst.end()) {
+        //     insert(mylib::make_pair(key, T{}));
+        //     return (*this)[std::move(key)];
+        // }
+        return (*it).second;
+    }
     return m_map[m_hasher(key, bucket_count())].front().second;
 }

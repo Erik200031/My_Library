@@ -9,7 +9,7 @@ namespace mylib
         hash() = default;
         size_t operator()(const Key& key, const int table_size) const
         {
-            long long rand_address = (long long)(&key);
+            Key tmp = key + 
             return rand_address % table_size;
         }
     };
