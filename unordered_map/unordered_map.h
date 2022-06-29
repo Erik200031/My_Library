@@ -35,9 +35,9 @@ namespace mylib
          : public std::iterator<std::forward_iterator_tag, mylib::pair<Key, T>>
         {
         public:
-            Iterator(): it {} {}
-            Iterator(const Iterator& rhs) : it {rhs.it} {}
-            Iterator(Iterator&& rhs) : it {rhs.it} {}
+            Iterator() {}
+            Iterator(const Iterator& rhs) {}
+            Iterator(Iterator&& rhs) {}
         public:
             Iterator& operator++();
             Iterator operator++(int);
@@ -48,7 +48,6 @@ namespace mylib
             mylib::pair<Key, T>& operator*();
             mylib::pair<Key, T>* operator->();
         private:
-            mylib::pair<Key, T>* it;
             rand_iter m_rand_itr;
             forw_iter m_forw_itr;
         };

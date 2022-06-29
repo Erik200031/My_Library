@@ -128,9 +128,22 @@ template <class Key, class T,
 typename mylib::unordered_map<Key, T, Hash, KeyEqual>::Iterator& 
 mylib::unordered_map<Key, T, Hash, KeyEqual>::Iterator::operator++()
 {
-    
+    if((++m_forw_itr).get() != nullptr) {
+        return m_forw_itr;
+    }
+    while(*m_rand_itr == nullptr) {
+        ++m_rand_itr;
+    }
+    return 
 }
 
+template <class Key, class T,
+ class Hash, class KeyEqual>
+mylib::pair<Key, T>& 
+mylib::unordered_map<Key, T, Hash, KeyEqual>::Iterator::operator*()
+{
+    return *m_forw_itr;
+}
 
 template <class Key, class T,
  class Hash, class KeyEqual>
