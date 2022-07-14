@@ -31,13 +31,32 @@ namespace mylib
         typedef KeyEqual key_equal;
         typedef typename mylib::vector<mylib::forward_list<mylib::pair<Key, T>>>::iterator rand_iter;
         typedef typename mylib::forward_list<mylib::pair<Key, T>>::Iterator forw_iter;
+        typedef mylib::vector<mylib::forward_list<mylib::pair<Key, T>>> hash_map;
+    //     class Iterator;
+    // private:
+    //     class Iterator_helper 
+    //     {
+    //         Iterator_helper(hash_map& map);
+    //         rand_iter m_rand_itr;
+    //         forw_iter m_forw_itr;
+    //         friend class Iterator;
+    //         friend class unordered_map;
+    //     };
+    public:
         class Iterator 
          : public std::iterator<std::forward_iterator_tag, mylib::pair<Key, T>>
         {
         public:
-            Iterator() {}
-            Iterator(const Iterator& rhs) {}
-            Iterator(Iterator&& rhs) {}
+            // Iterator(hash_map& map) : m_map_ref(map)
+            //  {m_rand_itr = m_map_ref.begin();
+            //  m_forw_itr = m_map_ref[0].begin();}
+             Iterator(const hash_map& map) 
+             {}
+            // Iterator(forw_iter it, hash_map& map) : m_map_ref(map)
+            //  {m_rand_itr = m_map_ref.begin();
+            //  m_forw_itr = m_map_ref[0].begin();}
+            // Iterator(const Iterator& rhs) {}
+            // Iterator(Iterator&& rhs) {}
         public:
             Iterator& operator++();
             Iterator operator++(int);
@@ -48,6 +67,7 @@ namespace mylib
             mylib::pair<Key, T>& operator*();
             mylib::pair<Key, T>* operator->();
         private:
+            // const hash_map& m_map_ref;
             rand_iter m_rand_itr;
             forw_iter m_forw_itr;
         };
@@ -57,14 +77,14 @@ namespace mylib
         unordered_map(size_type bucket_count) : m_map(bucket_count), m_hasher {},
          m_size {}, m_max_load_factor{MAX_LOAD_FACTOR} {}
         unordered_map(size_type bucket_count, const Hash& hash) 
-        : m_map(bucket_count), m_hasher {hash},
-         m_size {}, m_max_load_factor{MAX_LOAD_FACTOR} {}
+        : m_map(bucket_count), m_hasher {hash}, m_size {},
+         m_max_load_factor{MAX_LOAD_FACTOR} {}
         unordered_map(const unordered_map& rhs) 
-         : m_map {rhs.m_map}, m_hasher {rhs.m_hasher}, 
-         m_size{rhs.m_size}, m_max_load_factor{rhs.m_max_load_factor} {}
+         : m_map {rhs.m_map}, m_hasher {rhs.m_hasher}, m_size{rhs.m_size},
+          m_max_load_factor{rhs.m_max_load_factor} {}
         unordered_map(unordered_map&& rhs) noexcept 
-         : m_map {std::move(rhs.m_map)}, m_hasher {rhs.m_hasher}, 
-         m_size{rhs.m_size}, m_max_load_factor{rhs.m_max_load_factor} {}
+         : m_map {std::move(rhs.m_map)}, m_hasher {rhs.m_hasher}, m_size{rhs.m_size},
+          m_max_load_factor{rhs.m_max_load_factor} {}
         unordered_map& operator=(const unordered_map& rhs);
         unordered_map& operator=(unordered_map&& rhs) noexcept;
         T& operator[](Key&& key);
@@ -78,21 +98,18 @@ namespace mylib
         void insert(value_type&& value);
         void insert(const value_type& value);
         size_type bucket_count() const;
-        void print( ) {
-            for (int i = 0; i < m_map.size(); ++i)
-            {
-                for (auto &&it : m_map[i])
-                {
-                    std::cout << (it).second << " ";
-                }
-            }
-        }
+        void print();
+
+        Iterator begin();
+    private:
+        // static get_local_iter() {return m_local_itr;}
     private:
         auto& m_pre_incr(size_t index);
-        mylib::vector<mylib::forward_list<mylib::pair<Key, T>>> m_map;
+        hash_map m_map;
         Hash m_hasher;
         size_type m_size;
         float m_max_load_factor;
+        // static Iterator_helper m_local_itr;
     };
     
 } // namespace mylib

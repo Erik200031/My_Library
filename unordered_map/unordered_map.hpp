@@ -128,13 +128,9 @@ template <class Key, class T,
 typename mylib::unordered_map<Key, T, Hash, KeyEqual>::Iterator& 
 mylib::unordered_map<Key, T, Hash, KeyEqual>::Iterator::operator++()
 {
-    if((++m_forw_itr).get() != nullptr) {
-        return m_forw_itr;
-    }
-    while(*m_rand_itr == nullptr) {
-        ++m_rand_itr;
-    }
-    return 
+    if(++m_forw_itr) {return m_forw_itr;}
+    ++m_rand_itr;
+    return (*(m_rand_itr)).begin();
 }
 
 template <class Key, class T,
@@ -142,7 +138,7 @@ template <class Key, class T,
 mylib::pair<Key, T>& 
 mylib::unordered_map<Key, T, Hash, KeyEqual>::Iterator::operator*()
 {
-    return *m_forw_itr;
+    return Iterator(m_map_ref);
 }
 
 template <class Key, class T,
@@ -151,3 +147,27 @@ auto& mylib::unordered_map<Key, T, Hash, KeyEqual>::m_pre_incr(size_t index)
 {
     // return m_map[index].begin();
 }
+
+template <class Key, class T,
+ class Hash, class KeyEqual>
+void mylib::unordered_map<Key, T, Hash, KeyEqual>::print( ) {
+    for (int i = 0; i < m_map.size(); ++i) {
+        for (auto &&it : m_map[i]) {
+            std::cout << (it).second << " ";
+        }
+    }
+}
+
+template <class Key, class T,
+ class Hash, class KeyEqual>
+typename mylib::unordered_map<Key, T, Hash, KeyEqual>::Iterator
+ mylib::unordered_map<Key, T, Hash, KeyEqual>::begin()
+{
+    return (m_map[0]).begin();
+}
+
+// template <class Key, class T,
+//  class Hash, class KeyEqual>
+// mylib::unordered_map<Key, T, Hash, KeyEqual>::
+// Iterator_helper::Iterator_helper(hash_map& map)
+// : m_rand_itr {map.begin()}, m_forw_itr {map[0].begin()} {}

@@ -137,8 +137,9 @@ namespace mylib {
 
     private:
         U& operator[](int index) const;
-        void mergeSort(int begin, int end);
-        void merge_for_sort(int left, int mid, int right);
+        void mergeSort(Node<U>*& head);
+        Node<U>* merge_sorted(Node<U>* a, Node<U>* b);
+        void front_back_split(Node<U>* head, Node<U>*& front, Node<U>*& back);
         Node<U>* m_head;
     };
 }

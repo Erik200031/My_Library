@@ -255,43 +255,6 @@ void mylib::forward_list<U>::swap(int index1, int index2)
 }
 
 template <class U>
-void mylib::forward_list<U>::merge_for_sort(int left, int mid, int right)
-{
-    int  sub_list_one = mid - left + 1;
-    int  sub_list_two = right - mid;
-    mylib::forward_list<U> left_list(sub_list_one);
-    mylib::forward_list<U> right_list(sub_list_two);
-    for (auto i = 0; i < sub_list_one; i++)
-        left_list[i] = (*this)[left + i];
-    for (auto j = 0; j < sub_list_two; j++)
-        right_list[j] = (*this)[mid + 1 + j];
-    int index_of_sub_list_one = 0;
-    int index_of_sub_list_two = 0;
-    int index_of_merged = left; 
-    while (index_of_sub_list_one < sub_list_one && index_of_sub_list_two < sub_list_two) {
-        if (left_list[index_of_sub_list_one] <= right_list[index_of_sub_list_two]) {
-            (*this)[index_of_merged] = left_list[index_of_sub_list_one];
-            index_of_sub_list_one++;
-        }
-        else {
-            (*this)[index_of_merged] = right_list[index_of_sub_list_two];
-            index_of_sub_list_two++;
-        }
-        index_of_merged++;
-    }
-    while (index_of_sub_list_one < sub_list_one) {
-        (*this)[index_of_merged] = left_list[index_of_sub_list_one];
-        index_of_sub_list_one++;
-        index_of_merged++;
-    }
-    while (index_of_sub_list_two < sub_list_two) {
-        (*this)[index_of_merged] = right_list[index_of_sub_list_two];
-        index_of_sub_list_two++;
-        index_of_merged++;
-    }
-} 
-
-template <class U>
 bool mylib::forward_list<U>::is_sorted_list() const
 {
     Node<U>* cur = m_head;
@@ -307,15 +270,19 @@ bool mylib::forward_list<U>::is_sorted_list() const
 }
 
 template <class U>
-void mylib::forward_list<U>::mergeSort(int begin, int end)
+void mylib::forward_list<U>::mergeSort(Node<U>*& head_ref)
 {
-    if (begin >= end)
+    if(!head_ref || !head_ref->m_next)
+    {
         return;
-  
-    auto mid = begin + (end - begin) / 2;
-    mergeSort(begin, mid);
-    mergeSort(mid + 1, end);
-    merge_for_sort(begin, mid, end);
+    }
+    Node<U>* head = head_ref;
+    Node<U>* front;
+    Node<U>* back;
+    front_back_split(head, front, back);
+    mergeSort(front);
+    mergeSort(back);
+    head_ref = merge_sorted(front, back);
 }
 
 template <class U>
@@ -325,14 +292,30 @@ void mylib::forward_list<U>::sort()
     for(auto it: *this) {
         ++end;
     }
-    
-    mergeSort(0, end - 1);
+    mergeSort(m_head);
+}
+
+template <class U>
+void mylib::forward_list<U>::front_back_split(Node<U>* head, Node<U>*& front, Node<U>*& back)
+{
+    Node<U>* slow = head;
+    Node<U>* fast = head->m_next;
+    while(fast != nullptr) {
+        fast = fast->m_next;
+        if(fast != nullptr) {
+            fast = fast->m_next;
+            slow = slow->m_next;
+        }
+    }
+    front = head;
+    back = slow->m_next;
+    slow->m_next = nullptr;
 }
 
 template <class U>
 mylib::Node<U>* mylib::forward_list<U>::do_reverse(mylib::Node<U>* head) 
 {
-    if (head == nullptr || head->m_next == nullptr)
+    if(head == nullptr || head->m_next == nullptr)
         return head;
     Node<U>* tmp = do_reverse(head->m_next);
     head->m_next->m_next = head;
@@ -343,22 +326,30 @@ mylib::Node<U>* mylib::forward_list<U>::do_reverse(mylib::Node<U>* head)
 template <class U>
 void mylib::forward_list<U>::reverse()
 {
-    m_head =  do_reverse(m_head);
+    m_head = do_reverse(m_head);
 }
 
 template <class U>
 void mylib::forward_list<U>::merge(forward_list<U>& rhs) 
 {
-    if(is_sorted_list() && rhs.is_sorted_list()) {
-        Node<U>* cur = m_head;
-        while(cur != nullptr && cur->m_next != nullptr) {
-            cur = cur->m_next;
-        }
-        cur->m_next = rhs.m_head;
-        sort();
+    merge_sorted(m_head, rhs.m_head);
+    rhs.m_head = nullptr;
+}
+
+template <class U>
+mylib::Node<U>* mylib::forward_list<U>::merge_sorted(Node<U>* a, Node<U>* b)
+{
+    if(!a) {return b;}
+    else if(!b) {return a;}
+    Node<U>* result = nullptr;
+    if(a->m_data <= b->m_data) {
+        result = a;
+        result->m_next = merge_sorted(a->m_next, b);
     } else {
-        std::cout << "These lists are not sorted!\n";
+        result = b;
+        result->m_next = merge_sorted(a, b->m_next);
     }
+    return result;
 }
 
 template <class U>
@@ -504,7 +495,7 @@ mylib::forward_list<U>::Iterator::operator=(const Iterator& rhs)
     if(this == &rhs) {
         return *this;
     }
-    if(this != nullptr) {
+    if(this->it != nullptr) {
         delete this;
     }
     this->it = rhs.it;
@@ -518,7 +509,7 @@ mylib::forward_list<U>::Iterator::operator=(Iterator&& rhs)
     if(this == &rhs) {
         return *this;
     }
-    if(this != nullptr) {
+    if(this->it != nullptr) {
         delete this;
     }
     this->it = rhs.it;
